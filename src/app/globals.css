@@ -174,3 +174,30 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+/* Blink cursor for typewriter */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+.animate-blink {
+  animation: blink 0.8s infinite;
+}
+
+/* Slide up for toast */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+/* Typing indicator dots */
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+.typing-dot:nth-child(1) { animation: typing-bounce 1.2s infinite 0s; }
+.typing-dot:nth-child(2) { animation: typing-bounce 1.2s infinite 0.15s; }
+.typing-dot:nth-child(3) { animation: typing-bounce 1.2s infinite 0.3s; }

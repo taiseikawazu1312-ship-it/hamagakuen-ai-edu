@@ -11,6 +11,7 @@ import {
   Upload,
   ChevronDown,
 } from "lucide-react";
+import DemoBanner from "@/components/DemoBanner";
 
 const tabs = [
   { label: "過去年度比較", href: "/dashboard", icon: BarChart3 },
@@ -29,6 +30,7 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
+      <DemoBanner />
       {/* Header */}
       <header className="bg-white border-b border-[var(--border)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

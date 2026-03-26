@@ -1,13 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import {
   FileText,
   Download,
   FileSpreadsheet,
   ClipboardList,
   Users,
+  Loader2,
+  CheckCircle2,
 } from "lucide-react";
 import { reportTypes } from "@/lib/demo-data";
+import { useToast } from "@/components/Toast";
 
 const iconMap: Record<string, React.ElementType> = {
   summary: ClipboardList,
@@ -16,9 +20,19 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 export default function ReportsPage() {
+  const [generating, setGenerating] = useState<string | null>(null);
+  const { showToast } = useToast();
+
+  const handleDownload = (format: string) => {
+    setGenerating(format);
+    setTimeout(() => {
+      setGenerating(null);
+      showToast(`${format === "pdf" ? "PDF" : "Word"}レポートを生成しました`);
+    }, 2000);
+  };
+
   return (
     <div className="max-w-2xl mx-auto">
-      {/* Header */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[var(--accent)] mb-4">
           <FileText className="w-8 h-8 text-[var(--primary)]" />
@@ -31,7 +45,6 @@ export default function ReportsPage() {
         </p>
       </div>
 
-      {/* Report Type Cards */}
       <div className="space-y-3 mb-8">
         {reportTypes.map((report) => {
           const Icon = iconMap[report.id] || FileText;
@@ -68,15 +81,30 @@ export default function ReportsPage() {
         })}
       </div>
 
-      {/* Download Buttons */}
       <div className="flex flex-col sm:flex-row gap-3 justify-center">
-        <button className="btn-primary flex items-center justify-center gap-2">
-          <Download className="w-4 h-4" />
-          PDFでダウンロード
+        <button
+          onClick={() => handleDownload("pdf")}
+          disabled={!!generating}
+          className="btn-primary flex items-center justify-center gap-2 disabled:opacity-60"
+        >
+          {generating === "pdf" ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Download className="w-4 h-4" />
+          )}
+          {generating === "pdf" ? "生成中..." : "PDFでダウンロード"}
         </button>
-        <button className="btn-outline flex items-center justify-center gap-2">
-          <Download className="w-4 h-4" />
-          Wordでダウンロード
+        <button
+          onClick={() => handleDownload("word")}
+          disabled={!!generating}
+          className="btn-outline flex items-center justify-center gap-2 disabled:opacity-60"
+        >
+          {generating === "word" ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Download className="w-4 h-4" />
+          )}
+          {generating === "word" ? "生成中..." : "Wordでダウンロード"}
         </button>
       </div>
     </div>
