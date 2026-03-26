@@ -81,6 +81,132 @@ const baseStyles = `
 `;
 
 // ============================================================
+// Chart Helpers
+// ============================================================
+import { svgLineChart, svgBarChart, svgHorizontalBarChart, svgRadarChart, svgDonutChart } from "./report-charts";
+
+function buildYearlyTrendChart() {
+  return svgLineChart({
+    title: '過去4年間の成績推移',
+    data: yearlyComparison.map(y => ({
+      label: y.year.replace('年度', ''),
+      values: [
+        { name: '平均点', value: y.平均点 },
+        { name: '上位10%', value: y['上位10%'] },
+        { name: '中位', value: y.中位 },
+        { name: '下位10%', value: y['下位10%'] },
+      ]
+    })),
+    yMin: 20, yMax: 100,
+  });
+}
+
+function buildScoreDistChart() {
+  return svgBarChart({
+    title: '得点分布の前年比較',
+    data: scoreDistribution.map(s => ({
+      label: s.range,
+      values: [
+        { name: '今年度', value: s.今年度 },
+        { name: '前年度', value: s.前年度 },
+      ]
+    })),
+    yMax: 40,
+    unit: '人',
+  });
+}
+
+function buildGrowthChart() {
+  return svgLineChart({
+    title: '月次学力推移（入学時〜12月）',
+    data: growthData.map(g => ({
+      label: g.month,
+      values: [
+        { name: '平均点', value: g.平均点 },
+        { name: '上位層', value: g.上位層 },
+        { name: '下位層', value: g.下位層 },
+      ]
+    })),
+    yMin: 20, yMax: 100,
+    colors: ['#2563eb', '#16a34a', '#dc2626'],
+  });
+}
+
+function buildUnitScoresChart() {
+  return svgHorizontalBarChart({
+    title: '単元別正答率（今年度 vs 過去平均）',
+    data: unitScores.map(u => ({
+      label: u.unit,
+      value: u.今年度正答率,
+      compare: u.過去平均正答率,
+    })),
+  });
+}
+
+function buildComprehensionRadar() {
+  return svgRadarChart({
+    title: '分野別理解度',
+    data: comprehensionRadar.map(c => ({ label: c.area, value: c.score })),
+    color: '#10b981',
+  });
+}
+
+function buildStudentTrendChart() {
+  return svgLineChart({
+    title: '模試偏差値の推移',
+    data: comprehensionTrend.map(t => ({
+      label: t.period.replace('模試', ''),
+      values: [
+        { name: '英語', value: t.english },
+        { name: '数学', value: t.math },
+        { name: '国語', value: t.japanese },
+        { name: '物理', value: t.physics },
+        { name: '化学', value: t.chemistry },
+      ]
+    })),
+    yMin: 40, yMax: 85,
+    colors: ['#3B82F6', '#8B5CF6', '#F97316', '#14B8A6', '#EC4899'],
+  });
+}
+
+function buildWeeklyProgressChart() {
+  return svgBarChart({
+    title: '週次タスク完了率',
+    data: weeklyProgress.map(w => ({
+      label: w.week,
+      values: [{ name: '完了率', value: w.rate }],
+    })),
+    yMax: 100,
+    unit: '%',
+    colors: ['#10b981'],
+  });
+}
+
+function buildSubjectGapChart() {
+  return svgHorizontalBarChart({
+    title: '科目別偏差値（現在 vs 目標）',
+    data: subjectGaps.map(s => ({
+      label: s.subject,
+      value: s.current,
+      compare: s.target,
+    })),
+    color: '#10b981',
+    compareColor: '#c4b5fd',
+    maxValue: 80,
+  });
+}
+
+function buildDonutSummary() {
+  const avgProgress = Math.round(weeklyProgress.reduce((s, w) => s + w.rate, 0) / weeklyProgress.length);
+  return `<div style="text-align:center;margin:16px 0;">
+    ${svgDonutChart({ value: studentProfile.currentDeviation, max: 80, color: '#10b981', label: '/ 80', sublabel: '偏差値' })}
+    ${svgDonutChart({ value: avgProgress, color: '#3b82f6', label: '%', sublabel: '完了率' })}
+    ${svgDonutChart({ value: studentProfile.streak, max: 30, color: '#f59e0b', label: '/ 30日', sublabel: '連続学習' })}
+    ${svgDonutChart({ value: 78, color: '#8b5cf6', label: '%', sublabel: '理解度' })}
+  </div>`;
+}
+
+// ============================================================
 // Dashboard Reports
 // ============================================================
 
@@ -118,6 +244,8 @@ function generateSummaryReport(styles: string, date: string): string {
       <div class="stat-item"><div class="stat-value">31.5</div><div class="stat-sub negative">▼2.7%</div><div class="stat-label">下位10%平均</div></div>
     </div>
     <p class="section-intro">全指標で前年を下回る結果となりました。特に<strong>中位層（-4.2%）の低下が顕著</strong>であり、学力の二極化傾向が見られます。</p>
+
+    ${buildYearlyTrendChart()}
 
     <h2>クラス別成績と前年比較</h2>
     <table>
@@ -203,6 +331,7 @@ function generateDetailedReport(styles: string, date: string): string {
 
     <h2>2. 4年間の推移</h2>
     <p class="section-intro">全体平均は2022年度の64.5点をピークに2年連続で低下しています。上位層は比較的安定していますが、中位層・下位層の低下が全体を押し下げています。</p>
+    ${buildYearlyTrendChart()}
     <table>
       <tr><th>年度</th><th style="text-align:right">平均点</th><th style="text-align:right">上位10%</th><th style="text-align:right">中位</th><th style="text-align:right">下位10%</th><th style="text-align:right">上位-下位差</th></tr>
       ${yearlyComparison.map(r => `<tr><td><strong>${r.year}</strong></td><td style="text-align:right">${r.平均点}</td><td style="text-align:right">${r['上位10%']}</td><td style="text-align:right">${r.中位}</td><td style="text-align:right">${r['下位10%']}</td><td style="text-align:right">${(r['上位10%'] - r['下位10%']).toFixed(1)}</td></tr>`).join('')}
@@ -213,6 +342,7 @@ function generateDetailedReport(styles: string, date: string): string {
 
     <h2>3. 得点分布分析</h2>
     <p class="section-intro">中〜上位帯（61-100点）の生徒数が減少し、中〜下位帯（0-60点）が増加しています。</p>
+    ${buildScoreDistChart()}
     <table>
       <tr><th>得点帯</th><th style="text-align:right">今年度</th><th style="text-align:right">前年度</th><th style="text-align:right">増減</th><th style="text-align:right">構成比</th></tr>
       ${scoreDistribution.map(r => {
@@ -234,6 +364,7 @@ function generateDetailedReport(styles: string, date: string): string {
 
     <h2>5. 単元別正答率</h2>
     <p class="section-intro">全8単元中、前年比マイナスが8単元と全面的な低下傾向。特に差分-8%以上の3単元が重点対策対象です。</p>
+    ${buildUnitScoresChart()}
     <table>
       <tr><th>単元</th><th style="text-align:right">今年度</th><th style="text-align:right">過去平均</th><th style="text-align:right">差分</th><th>重要度</th></tr>
       ${unitScores.map(r => `<tr><td>${r.unit}</td><td style="text-align:right">${r.今年度正答率}%</td><td style="text-align:right">${r.過去平均正答率}%</td><td style="text-align:right" class="${r.diff <= -8 ? 'negative' : r.diff <= -4 ? 'warning' : ''}">${r.diff > 0 ? '+' : ''}${r.diff}%</td><td>${r.diff <= -8 ? '<span class="badge badge-high">重点</span>' : r.diff <= -4 ? '<span class="badge badge-medium">注意</span>' : '<span class="badge badge-low">許容</span>'}</td></tr>`).join('')}
@@ -338,6 +469,8 @@ function generateParentReport(styles: string, date: string): string {
       ${classComparison.map(r => `<tr><td><strong>${r.class}</strong></td><td style="text-align:right">${r.平均点}点</td><td style="text-align:right">${r.前年比 > 0 ? '+' : ''}${r.前年比}点</td><td style="font-size:11px;">${r.前年比 >= -1.5 ? '前年並みを維持しています' : r.前年比 >= -3 ? 'やや低下しています' : '重点的に対策を講じます'}</td></tr>`).join('')}
     </table>
 
+    ${buildGrowthChart()}
+
     <h2>成績の傾向と分析</h2>
     <div class="summary-box" style="background:#eef2ff;border-left:4px solid #6366f1;">
       <p><strong>伸びている点:</strong></p>
@@ -432,6 +565,7 @@ function generateSelfReport(styles: string, date: string, avgProgress: number, w
 
     <h2>科目別ギャップ分析</h2>
     <p class="section-intro">志望校合格に必要な偏差値との差を科目別に分析します。ギャップがマイナスの科目は目標を上回っており、プラスの科目が強化対象です。</p>
+    ${buildSubjectGapChart()}
     <table>
       <tr><th>科目</th><th style="text-align:right">現在</th><th style="text-align:right">目標</th><th style="text-align:right">ギャップ</th><th>達成度</th><th>優先度</th></tr>
       ${subjectGaps.map(s => {
@@ -443,6 +577,7 @@ function generateSelfReport(styles: string, date: string, avgProgress: number, w
     </table>
 
     <h2>分野別理解度</h2>
+    ${buildComprehensionRadar()}
     <table>
       <tr><th>分野</th><th style="text-align:right">理解度</th><th>レベル</th><th>目安</th></tr>
       ${comprehensionRadar.map(c => `<tr><td>${c.area}</td><td style="text-align:right"><strong>${c.score}%</strong></td>
@@ -451,6 +586,7 @@ function generateSelfReport(styles: string, date: string, avgProgress: number, w
     </table>
 
     <h2>模試偏差値の推移</h2>
+    ${buildStudentTrendChart()}
     <table>
       <tr><th>時期</th><th style="text-align:right">英語</th><th style="text-align:right">数学</th><th style="text-align:right">国語</th><th style="text-align:right">物理</th><th style="text-align:right">化学</th></tr>
       ${comprehensionTrend.map(t => `<tr><td>${t.period}</td><td style="text-align:right">${t.english}</td><td style="text-align:right">${t.math}</td><td style="text-align:right">${t.japanese}</td><td style="text-align:right">${t.physics}</td><td style="text-align:right">${t.chemistry}</td></tr>`).join('')}
@@ -501,6 +637,7 @@ function generateTeacherReport(styles: string, date: string, completedTasks: num
     </div>
 
     <h2>科目別偏差値と評価</h2>
+    ${buildSubjectGapChart()}
     <table>
       <tr><th>科目</th><th style="text-align:right">現在</th><th style="text-align:right">目標</th><th style="text-align:right">差</th><th>判定</th><th>指導方針</th></tr>
       ${subjectGaps.map(s => `<tr>
@@ -512,6 +649,7 @@ function generateTeacherReport(styles: string, date: string, completedTasks: num
     </table>
 
     <h2>分野別理解度</h2>
+    ${buildComprehensionRadar()}
     <table>
       <tr><th>分野</th><th style="text-align:right">理解度</th><th>レベル</th><th>推奨アクション</th></tr>
       ${comprehensionRadar.map(c => `<tr><td>${c.area}</td><td style="text-align:right">${c.score}%</td>
@@ -520,6 +658,7 @@ function generateTeacherReport(styles: string, date: string, completedTasks: num
     </table>
 
     <h2>模試偏差値の推移</h2>
+    ${buildStudentTrendChart()}
     <table>
       <tr><th>時期</th><th style="text-align:right">英語</th><th style="text-align:right">数学</th><th style="text-align:right">国語</th><th style="text-align:right">物理</th><th style="text-align:right">化学</th></tr>
       ${comprehensionTrend.map(t => `<tr><td>${t.period}</td><td style="text-align:right">${t.english}</td><td style="text-align:right">${t.math}</td><td style="text-align:right">${t.japanese}</td><td style="text-align:right">${t.physics}</td><td style="text-align:right">${t.chemistry}</td></tr>`).join('')}
@@ -527,6 +666,7 @@ function generateTeacherReport(styles: string, date: string, completedTasks: num
     <p class="section-intro">全科目上昇傾向。英語+13、国語+10が特に良好。物理は+10だが水準が低い（50→60）ため、12月模試で65到達を目標に指導を強化。</p>
 
     <h2>タスク完了率の推移</h2>
+    ${buildWeeklyProgressChart()}
     <table>
       <tr><th>週</th>${weeklyProgress.map(w => `<th style="text-align:center">${w.week}</th>`).join('')}<th style="text-align:center">平均</th></tr>
       <tr><td><strong>完了率</strong></td>${weeklyProgress.map(w => `<td style="text-align:center" class="${w.rate >= 85 ? 'positive' : w.rate < 75 ? 'negative' : ''}">${w.rate}%</td>`).join('')}<td style="text-align:center"><strong>${avgProgress}%</strong></td></tr>
@@ -601,6 +741,7 @@ function generateStudentParentReport(styles: string, date: string, avgProgress: 
 
     <h2>模試成績の推移</h2>
     <p class="section-intro">4月から12月にかけて、全科目で着実に成績が向上しています。</p>
+    ${buildStudentTrendChart()}
     <table>
       <tr><th>時期</th><th style="text-align:right">英語</th><th style="text-align:right">数学</th><th style="text-align:right">国語</th><th style="text-align:right">物理</th><th style="text-align:right">化学</th></tr>
       ${comprehensionTrend.map(t => `<tr><td>${t.period}</td><td style="text-align:right">${t.english}</td><td style="text-align:right">${t.math}</td><td style="text-align:right">${t.japanese}</td><td style="text-align:right">${t.physics}</td><td style="text-align:right">${t.chemistry}</td></tr>`).join('')}
