@@ -177,8 +177,8 @@ export default function AiChatPage() {
               <AlertCircle className="w-4 h-4 text-red-500" />
             </div>
             <div className="max-w-[75%] rounded-2xl px-4 py-3 bg-red-50 border border-red-200">
-              <p className="text-sm text-red-700 font-medium mb-1">���ラーが発生しました</p>
-              <p className="text-xs text-red-600">AI学習アシス���ントに接続できませんでした。しばらく待ってから再度お試しください。</p>
+              <p className="text-sm text-red-700 font-medium mb-1">エラーが発生しました</p>
+              <p className="text-xs text-red-600">AI学習アシスタントに接続できませんでした。しばらく待ってから再度お試しください。</p>
               <button onClick={clearError} className="mt-2 text-xs text-red-700 underline hover:text-red-900">閉じる</button>
             </div>
           </div>

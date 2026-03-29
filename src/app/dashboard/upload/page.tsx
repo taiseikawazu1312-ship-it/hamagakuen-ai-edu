@@ -51,11 +51,11 @@ const documentCategories = [
   },
   {
     id: "curriculum",
-    label: "カリキュラム・シラバ��",
+    label: "カリキュラム・シラバス",
     icon: BookOpen,
     color: "bg-emerald-50 text-emerald-600 border-emerald-200",
     iconColor: "text-emerald-600",
-    description: "年間カリキュラムや授業計画書。進捗管理に使��",
+    description: "年間カリキュラムや授業計画書。進捗管理に使用",
     formats: "PDF, Word, Excel",
     aiSteps: ["文書構造を解析中...", "単元・スケジュールを抽出中...", "進捗管理データに変換中...", "カレンダーに反映中..."],
     resultPreview: {
@@ -79,7 +79,7 @@ const documentCategories = [
     aiSteps: ["問題文を解析中（OCR処理）...", "出題分野を分類中...", "難易度を判定中...", "傾向分析レポートを生成中..."],
     resultPreview: {
       rows: [
-        { label: "大学名", value: "早稲田大学 商���部" },
+        { label: "大学名", value: "早稲田大学 商学部" },
         { label: "年度", value: "2024年度 一般入試" },
         { label: "科目", value: "英語" },
         { label: "大問数", value: "5問" },
@@ -112,11 +112,11 @@ const documentCategories = [
 const uploadHistory = [
   { id: 1, name: "2024年度_第4回全国模試_成績一覧.xlsx", category: "模試成績表", date: "2024-10-28", status: "完了", students: 42 },
   { id: 2, name: "山田太一_数学IIB_答案.pdf", category: "解答用紙・答案", date: "2024-10-25", status: "完了", students: 1 },
-  { id: 3, name: "2024年度_3学期カリキュラム.pdf", category: "カリキ���ラム・シラバス", date: "2024-10-20", status: "完了", students: null },
+  { id: 3, name: "2024年度_3学期カリキュラム.pdf", category: "カリキュラム・シラバス", date: "2024-10-20", status: "完了", students: null },
   { id: 4, name: "早稲田大学_商学部_2024_英語.pdf", category: "過去問・入試問題", date: "2024-10-18", status: "完了", students: null },
   { id: 5, name: "2024年度_第3回全国模試_成績一覧.csv", category: "模試成績表", date: "2024-08-15", status: "完了", students: 42 },
-  { id: 6, name: "10月_出席簿.xlsx", category: "出席・学習記録", date: "2024-10-31", status: "���了", students: 42 },
-  { id: 7, name: "佐藤花子_物理_答案スキャン.jpg", category: "解答用紙・���案", date: "2024-10-22", status: "完了", students: 1 },
+  { id: 6, name: "10月_出席簿.xlsx", category: "出席・学習記録", date: "2024-10-31", status: "完了", students: 42 },
+  { id: 7, name: "佐藤花子_物理_答案スキャン.jpg", category: "解答用紙・答案", date: "2024-10-22", status: "完了", students: 1 },
   { id: 8, name: "京都大学_理学部_2024_数学.pdf", category: "過去問・入試問題", date: "2024-10-15", status: "完了", students: null },
 ];
 
@@ -312,7 +312,7 @@ export default function UploadPage() {
                   <Upload className={`w-7 h-7 ${isDragging ? "text-[var(--primary)]" : "text-[var(--muted)]"}`} />
                 </div>
                 <div>
-                  <p className="text-base font-semibold text-[var(--foreground)] mb-1">ファイルをドラッ���&ドロップ</p>
+                  <p className="text-base font-semibold text-[var(--foreground)] mb-1">ファイルをドラッグ&ドロップ</p>
                   <p className="text-sm text-[var(--muted)]">またはクリックしてファイルを選択</p>
                 </div>
               </div>
@@ -392,7 +392,7 @@ export default function UploadPage() {
                   <FileText className="w-4 h-4" />結果を保存
                 </button>
                 <button onClick={reset} className="btn-outline text-sm">
-                  別の資料をアッ���ロード
+                  別の資料をアップロード
                 </button>
               </div>
             </div>
