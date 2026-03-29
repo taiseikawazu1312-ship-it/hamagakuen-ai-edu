@@ -4,13 +4,17 @@ import { useState, useCallback, use } from "react";
 import Link from "next/link";
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
 } from "recharts";
 import {
   ArrowLeft, Brain, TrendingUp, TrendingDown, Minus, Target, AlertTriangle, CheckCircle2, ChevronDown, ChevronRight, GraduationCap, Users,
+  Flame, Clock, BookOpen, Circle, Plus, ListChecks,
 } from "lucide-react";
 import { studentsList, getExamHistory, getSectionScores, getStudentTrend } from "@/lib/students-data";
 import { getUniversityData } from "@/lib/university-history-data";
 import { curriculum } from "@/lib/curriculum-data";
+import { getStudentLearning, subjectColorMap, type LearningTask } from "@/lib/student-learning-data";
+import { useToast } from "@/components/Toast";
 import AnalyzingLoader from "@/components/AnalyzingLoader";
 import FadeIn from "@/components/FadeIn";
 import CountUp from "@/components/CountUp";
@@ -35,9 +39,15 @@ const judgmentColors: Record<string, string> = {
 export default function StudentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"exams" | "units" | "trend" | "univ">("exams");
+  const [activeTab, setActiveTab] = useState<"exams" | "units" | "trend" | "univ" | "learning" | "tasks">("exams");
   const [unitSubject, setUnitSubject] = useState("math");
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
+  const [localTasks, setLocalTasks] = useState<LearningTask[]>([]);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [newTaskSubject, setNewTaskSubject] = useState("数学");
+  const [newTaskDuration, setNewTaskDuration] = useState(30);
+  const [newTaskPriority, setNewTaskPriority] = useState<"高" | "中" | "低">("中");
+  const { showToast } = useToast();
 
   const handleLoadComplete = useCallback(() => setIsLoading(false), []);
 
@@ -55,8 +65,30 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
   const sectionScores = getSectionScores(id);
   const trendData = getStudentTrend(id);
   const univData = getUniversityData(student.targetSchool);
+  const learningProfile = getStudentLearning(id);
   const gapToTarget = student.targetDeviation - student.deviation;
   const subjectList = curriculum.map(s => ({ id: s.subjectId, name: s.subjectName }));
+
+  // タスク管理: 元データ + ローカル追加分を結合
+  const allTasks = [...(learningProfile?.tasks || []), ...localTasks];
+  const completedTasks = allTasks.filter(t => t.completed).length;
+
+  const addTask = () => {
+    if (!newTaskTitle.trim()) return;
+    const task: LearningTask = {
+      id: `new-${Date.now()}`,
+      title: newTaskTitle.trim(),
+      subject: newTaskSubject,
+      duration: newTaskDuration,
+      priority: newTaskPriority,
+      completed: false,
+      assignedBy: "teacher",
+      assignedDate: new Date().toISOString().split("T")[0],
+    };
+    setLocalTasks(prev => [...prev, task]);
+    setNewTaskTitle("");
+    showToast(`タスク「${task.title}」を${student.name}に追加しました`);
+  };
 
   const toggleSection = (sectionId: string) => {
     setExpandedSections(prev => {
@@ -135,7 +167,7 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
       {/* Tab Switcher */}
       <FadeIn delay={300}>
         <div className="flex gap-1 bg-white border border-[var(--border)] rounded-xl p-1 w-fit overflow-x-auto">
-          {([["exams", "模試成績"], ["units", "単元別成績"], ["trend", "偏差値推移"], ["univ", "合格者比較"]] as const).map(([key, label]) => (
+          {([["learning", "学習状況"], ["tasks", "タスク管理"], ["exams", "模試成績"], ["units", "単元別成績"], ["trend", "偏差値推移"], ["univ", "合格者比較"]] as const).map(([key, label]) => (
             <button key={key} onClick={() => setActiveTab(key)}
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${activeTab === key ? "bg-[var(--primary)] text-white" : "text-[var(--muted)] hover:bg-[var(--background)]"}`}>
               {label}
@@ -459,6 +491,156 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
             <p className="text-[var(--muted)]">この志望校の過去データはまだ登録されていません</p>
           </div>
         </FadeIn>
+      )}
+
+      {/* === 学習状況タブ === */}
+      {activeTab === "learning" && learningProfile && (
+        <div className="space-y-4">
+          <FadeIn delay={100}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="card flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center"><CheckCircle2 className="w-5 h-5 text-emerald-500" /></div>
+                <div><p className="text-lg font-bold">{completedTasks}/{allTasks.length}</p><p className="text-xs text-[var(--muted)]">タスク完了</p></div>
+              </div>
+              <div className="card flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center"><Clock className="w-5 h-5 text-blue-500" /></div>
+                <div><p className="text-lg font-bold">{learningProfile.weeklyStudyHours}h</p><p className="text-xs text-[var(--muted)]">学習時間 / 目標{learningProfile.weeklyTargetHours}h</p></div>
+              </div>
+              <div className="card flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center"><Flame className="w-5 h-5 text-orange-500" /></div>
+                <div><p className="text-lg font-bold">{learningProfile.streak}日</p><p className="text-xs text-[var(--muted)]">連続学習</p></div>
+              </div>
+              <div className="card flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center"><TrendingUp className="w-5 h-5 text-purple-500" /></div>
+                <div><p className="text-lg font-bold">{Math.round(learningProfile.comprehensionRadar.reduce((s, r) => s + r.score, 0) / learningProfile.comprehensionRadar.length)}%</p><p className="text-xs text-[var(--muted)]">理解度スコア</p></div>
+              </div>
+            </div>
+          </FadeIn>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <FadeIn delay={200}>
+              <div className="card">
+                <div className="flex items-center gap-2 mb-4"><BookOpen className="w-5 h-5 text-[var(--primary)]" /><h3 className="text-sm font-bold">週別タスク完了率</h3></div>
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={learningProfile.weeklyLogs}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis dataKey="week" tick={{ fontSize: 11 }} />
+                    <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} unit="%" />
+                    <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #e2e8f0" }} />
+                    <Bar dataKey="completionRate" name="完了率" fill="#10b981" radius={[4, 4, 0, 0]} animationDuration={1200} />
+                  </BarChart>
+                </ResponsiveContainer>
+                {learningProfile.weeklyLogs.some(w => w.completionRate < 70) && (
+                  <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
+                    <p className="text-xs text-amber-700">完了率が70%を下回っている週があります。原因を確認してください。</p>
+                  </div>
+                )}
+              </div>
+            </FadeIn>
+
+            <FadeIn delay={300}>
+              <div className="card">
+                <div className="flex items-center gap-2 mb-4"><Target className="w-5 h-5 text-[var(--primary)]" /><h3 className="text-sm font-bold">分野別理解度</h3></div>
+                <ResponsiveContainer width="100%" height={240}>
+                  <RadarChart data={learningProfile.comprehensionRadar} cx="50%" cy="50%" outerRadius="70%">
+                    <PolarGrid stroke="#e5e7eb" />
+                    <PolarAngleAxis dataKey="area" tick={{ fontSize: 11, fill: "#6b7280" }} />
+                    <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fontSize: 10, fill: "#9ca3af" }} />
+                    <Radar name="理解度" dataKey="score" stroke="#2563eb" fill="#2563eb" fillOpacity={0.2} strokeWidth={2} />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "learning" && !learningProfile && (
+        <FadeIn delay={100}><div className="card text-center py-12"><p className="text-[var(--muted)]">この生徒の学習データはまだありません</p></div></FadeIn>
+      )}
+
+      {/* === タスク管理タブ === */}
+      {activeTab === "tasks" && (
+        <div className="space-y-4">
+          {/* タスク追加フォーム */}
+          <FadeIn delay={100}>
+            <div className="card">
+              <div className="flex items-center gap-2 mb-4">
+                <Plus className="w-5 h-5 text-[var(--primary)]" />
+                <h3 className="text-sm font-bold">タスクを追加</h3>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--accent)] text-[var(--primary)] font-medium">先生から割り当て</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+                <input type="text" value={newTaskTitle} onChange={e => setNewTaskTitle(e.target.value)} placeholder="タスク名を入力..."
+                  className="px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)] sm:col-span-2" />
+                <select value={newTaskSubject} onChange={e => setNewTaskSubject(e.target.value)}
+                  className="px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)]">
+                  {["数学", "英語", "国語", "物理", "化学"].map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+                <div className="flex gap-2">
+                  <input type="number" value={newTaskDuration} onChange={e => setNewTaskDuration(Number(e.target.value))} min={5} max={120}
+                    className="w-20 px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)]" />
+                  <span className="text-sm text-[var(--muted)] self-center">分</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex gap-2">
+                  {(["高", "中", "低"] as const).map(p => (
+                    <button key={p} onClick={() => setNewTaskPriority(p)}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${newTaskPriority === p ? "bg-[var(--primary)] text-white" : "bg-[var(--background)] text-[var(--muted)] border border-[var(--border)]"}`}>
+                      重要度{p}
+                    </button>
+                  ))}
+                </div>
+                <button onClick={addTask} disabled={!newTaskTitle.trim()}
+                  className="btn-primary text-sm flex items-center gap-1.5 disabled:opacity-50">
+                  <Plus className="w-4 h-4" />タスクを追加
+                </button>
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* タスク一覧 */}
+          <FadeIn delay={200}>
+            <div className="card">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <ListChecks className="w-5 h-5 text-[var(--primary)]" />
+                  <h3 className="text-sm font-bold">タスク一覧</h3>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
+                  <span>完了 {completedTasks}/{allTasks.length}</span>
+                  <div className="w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${allTasks.length > 0 ? (completedTasks / allTasks.length) * 100 : 0}%` }} />
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                {allTasks.map(task => (
+                  <div key={task.id} className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${task.completed ? "bg-gray-50 border-gray-200" : "bg-white border-[var(--border)] hover:border-[var(--primary-light)]"}`}>
+                    {task.completed ? <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0" /> : <Circle className="w-5 h-5 text-gray-300 flex-shrink-0" />}
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-sm font-medium ${task.completed ? "text-gray-400 line-through" : ""}`}>{task.title}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${subjectColorMap[task.subject] || "bg-gray-100 text-gray-700"}`}>{task.subject}</span>
+                        <span className="text-xs text-[var(--muted)]">{task.duration}分</span>
+                        <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${task.assignedBy === "teacher" ? "bg-blue-50 text-blue-600" : "bg-gray-100 text-gray-500"}`}>
+                          {task.assignedBy === "teacher" ? "先生" : "AI"}
+                        </span>
+                        {task.completedDate && <span className="text-xs text-[var(--muted)]">完了: {task.completedDate}</span>}
+                      </div>
+                    </div>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${task.priority === "高" ? "bg-red-100 text-red-700" : task.priority === "中" ? "bg-yellow-100 text-yellow-700" : "bg-gray-100 text-gray-600"}`}>
+                      {task.priority}
+                    </span>
+                  </div>
+                ))}
+                {allTasks.length === 0 && <p className="text-sm text-[var(--muted)] text-center py-8">タスクがありません</p>}
+              </div>
+            </div>
+          </FadeIn>
+        </div>
       )}
 
       {/* AI Comment */}
