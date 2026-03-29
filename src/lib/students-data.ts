@@ -24,6 +24,7 @@ export interface StudentDetail extends StudentListItem {
 
 export interface ExamResult {
   examName: string;
+  provider: "駿台" | "河合塾";
   date: string;
   subjects: {
     name: string;
@@ -35,6 +36,7 @@ export interface ExamResult {
   totalMaxScore: number;
   overallDeviation: number;
   rank: string;
+  judgment?: { university: string; level: "A" | "B" | "C" | "D" | "E" };
 }
 
 export interface UnitScore {
@@ -137,25 +139,25 @@ export const studentsList: StudentDetail[] = [
 // ============================================================
 export const examHistory: Record<string, ExamResult[]> = {
   s001: [
-    { examName: "2024年度 第1回 全国模試", date: "2024-04", subjects: [
+    { examName: "第1回 駿台全国模試", provider: "駿台" as const, date: "2024-05", subjects: [
       { name: "数学", score: 88, maxScore: 100, deviation: 72.0 },
       { name: "国語", score: 82, maxScore: 100, deviation: 70.5 },
       { name: "物理", score: 90, maxScore: 100, deviation: 74.8 },
       { name: "化学", score: 78, maxScore: 100, deviation: 68.2 },
     ], totalScore: 338, totalMaxScore: 400, overallDeviation: 71.2, rank: "15/450" },
-    { examName: "2024年度 第2回 全国模試", date: "2024-06", subjects: [
+    { examName: "第1回 全統記述模試", provider: "河合塾" as const, date: "2024-06", subjects: [
       { name: "数学", score: 90, maxScore: 100, deviation: 73.1 },
       { name: "国語", score: 78, maxScore: 100, deviation: 68.0 },
       { name: "物理", score: 92, maxScore: 100, deviation: 75.5 },
       { name: "化学", score: 80, maxScore: 100, deviation: 69.0 },
     ], totalScore: 340, totalMaxScore: 400, overallDeviation: 71.5, rank: "12/450" },
-    { examName: "2024年度 第3回 全国模試", date: "2024-08", subjects: [
+    { examName: "第2回 全統共通テスト模試", provider: "河合塾" as const, date: "2024-08", subjects: [
       { name: "数学", score: 92, maxScore: 100, deviation: 73.8 },
       { name: "国語", score: 85, maxScore: 100, deviation: 71.2 },
       { name: "物理", score: 95, maxScore: 100, deviation: 76.5 },
       { name: "化学", score: 82, maxScore: 100, deviation: 70.0 },
     ], totalScore: 354, totalMaxScore: 400, overallDeviation: 72.8, rank: "8/450" },
-    { examName: "2024年度 第4回 全国模試", date: "2024-10", subjects: [
+    { examName: "第2回 駿台全国模試", provider: "駿台" as const, date: "2024-10", subjects: [
       { name: "数学", score: 91, maxScore: 100, deviation: 73.5 },
       { name: "国語", score: 80, maxScore: 100, deviation: 69.2 },
       { name: "物理", score: 93, maxScore: 100, deviation: 75.8 },
@@ -163,25 +165,25 @@ export const examHistory: Record<string, ExamResult[]> = {
     ], totalScore: 349, totalMaxScore: 400, overallDeviation: 72.4, rank: "10/450" },
   ],
   s002: [
-    { examName: "2024年度 第1回 全国模試", date: "2024-04", subjects: [
+    { examName: "第1回 駿台全国模試", provider: "駿台" as const, date: "2024-05", subjects: [
       { name: "数学", score: 62, maxScore: 100, deviation: 55.0 },
       { name: "国語", score: 70, maxScore: 100, deviation: 60.5 },
       { name: "物理", score: 68, maxScore: 100, deviation: 58.8 },
       { name: "化学", score: 55, maxScore: 100, deviation: 50.2 },
     ], totalScore: 255, totalMaxScore: 400, overallDeviation: 56.5, rank: "180/450" },
-    { examName: "2024年度 第2回 全国模試", date: "2024-06", subjects: [
+    { examName: "第1回 全統記述模試", provider: "河合塾" as const, date: "2024-06", subjects: [
       { name: "数学", score: 70, maxScore: 100, deviation: 60.2 },
       { name: "国語", score: 72, maxScore: 100, deviation: 62.0 },
       { name: "物理", score: 72, maxScore: 100, deviation: 61.5 },
       { name: "化学", score: 58, maxScore: 100, deviation: 52.0 },
     ], totalScore: 272, totalMaxScore: 400, overallDeviation: 59.8, rank: "145/450" },
-    { examName: "2024年度 第3回 全国模試", date: "2024-08", subjects: [
+    { examName: "第2回 全統共通テスト模試", provider: "河合塾" as const, date: "2024-08", subjects: [
       { name: "数学", score: 78, maxScore: 100, deviation: 65.5 },
       { name: "国語", score: 75, maxScore: 100, deviation: 64.0 },
       { name: "物理", score: 74, maxScore: 100, deviation: 62.8 },
       { name: "化学", score: 60, maxScore: 100, deviation: 53.5 },
     ], totalScore: 287, totalMaxScore: 400, overallDeviation: 63.0, rank: "110/450" },
-    { examName: "2024年度 第4回 全国模試", date: "2024-10", subjects: [
+    { examName: "第2回 駿台全国模試", provider: "駿台" as const, date: "2024-10", subjects: [
       { name: "数学", score: 82, maxScore: 100, deviation: 68.0 },
       { name: "国語", score: 73, maxScore: 100, deviation: 63.0 },
       { name: "物理", score: 76, maxScore: 100, deviation: 64.2 },
@@ -189,25 +191,25 @@ export const examHistory: Record<string, ExamResult[]> = {
     ], totalScore: 293, totalMaxScore: 400, overallDeviation: 65.2, rank: "95/450" },
   ],
   s004: [
-    { examName: "2024年度 第1回 全国模試", date: "2024-04", subjects: [
+    { examName: "第1回 駿台全国模試", provider: "駿台" as const, date: "2024-05", subjects: [
       { name: "数学", score: 65, maxScore: 100, deviation: 57.0 },
       { name: "国語", score: 68, maxScore: 100, deviation: 59.0 },
       { name: "物理", score: 72, maxScore: 100, deviation: 61.5 },
       { name: "化学", score: 60, maxScore: 100, deviation: 53.5 },
     ], totalScore: 265, totalMaxScore: 400, overallDeviation: 60.2, rank: "130/450" },
-    { examName: "2024年度 第2回 全国模試", date: "2024-06", subjects: [
+    { examName: "第1回 全統記述模試", provider: "河合塾" as const, date: "2024-06", subjects: [
       { name: "数学", score: 63, maxScore: 100, deviation: 55.8 },
       { name: "国語", score: 65, maxScore: 100, deviation: 57.0 },
       { name: "物理", score: 70, maxScore: 100, deviation: 60.2 },
       { name: "化学", score: 58, maxScore: 100, deviation: 52.0 },
     ], totalScore: 256, totalMaxScore: 400, overallDeviation: 58.5, rank: "155/450" },
-    { examName: "2024年度 第3回 全国模試", date: "2024-08", subjects: [
+    { examName: "第2回 全統共通テスト模試", provider: "河合塾" as const, date: "2024-08", subjects: [
       { name: "数学", score: 60, maxScore: 100, deviation: 53.8 },
       { name: "国語", score: 62, maxScore: 100, deviation: 55.0 },
       { name: "物理", score: 68, maxScore: 100, deviation: 58.8 },
       { name: "化学", score: 55, maxScore: 100, deviation: 50.5 },
     ], totalScore: 245, totalMaxScore: 400, overallDeviation: 57.5, rank: "175/450" },
-    { examName: "2024年度 第4回 全国模試", date: "2024-10", subjects: [
+    { examName: "第2回 駿台全国模試", provider: "駿台" as const, date: "2024-10", subjects: [
       { name: "数学", score: 58, maxScore: 100, deviation: 52.5 },
       { name: "国語", score: 60, maxScore: 100, deviation: 53.8 },
       { name: "物理", score: 70, maxScore: 100, deviation: 60.2 },
@@ -220,25 +222,25 @@ export const examHistory: Record<string, ExamResult[]> = {
 function generateExamData(student: StudentDetail): ExamResult[] {
   const base = student.deviation - 5;
   return [
-    { examName: "2024年度 第1回 全国模試", date: "2024-04", subjects: [
+    { examName: "第1回 駿台全国模試", provider: "駿台" as const, date: "2024-05", subjects: [
       { name: "数学", score: Math.round(base * 1.0 + 5), maxScore: 100, deviation: base - 2 },
       { name: "国語", score: Math.round(base * 0.95 + 8), maxScore: 100, deviation: base - 1 },
       { name: "物理", score: Math.round(base * 0.9 + 10), maxScore: 100, deviation: base - 3 },
       { name: "化学", score: Math.round(base * 0.85 + 12), maxScore: 100, deviation: base - 4 },
     ], totalScore: Math.round(student.latestScore - 30), totalMaxScore: 400, overallDeviation: student.deviation - 4, rank: `${Math.round(450 - student.deviation * 4)}/450` },
-    { examName: "2024年度 第2回 全国模試", date: "2024-06", subjects: [
+    { examName: "第1回 全統記述模試", provider: "河合塾" as const, date: "2024-06", subjects: [
       { name: "数学", score: Math.round(base * 1.02 + 6), maxScore: 100, deviation: base - 1 },
       { name: "国語", score: Math.round(base * 0.97 + 9), maxScore: 100, deviation: base },
       { name: "物理", score: Math.round(base * 0.92 + 11), maxScore: 100, deviation: base - 2 },
       { name: "化学", score: Math.round(base * 0.88 + 13), maxScore: 100, deviation: base - 3 },
     ], totalScore: Math.round(student.latestScore - 18), totalMaxScore: 400, overallDeviation: student.deviation - 2.5, rank: `${Math.round(450 - student.deviation * 4.2)}/450` },
-    { examName: "2024年度 第3回 全国模試", date: "2024-08", subjects: [
+    { examName: "第2回 全統共通テスト模試", provider: "河合塾" as const, date: "2024-08", subjects: [
       { name: "数学", score: Math.round(base * 1.05 + 7), maxScore: 100, deviation: base },
       { name: "国語", score: Math.round(base * 1.0 + 10), maxScore: 100, deviation: base + 1 },
       { name: "物理", score: Math.round(base * 0.95 + 12), maxScore: 100, deviation: base - 1 },
       { name: "化学", score: Math.round(base * 0.9 + 14), maxScore: 100, deviation: base - 2 },
     ], totalScore: Math.round(student.latestScore - 8), totalMaxScore: 400, overallDeviation: student.deviation - 1, rank: `${Math.round(450 - student.deviation * 4.5)}/450` },
-    { examName: "2024年度 第4回 全国模試", date: "2024-10", subjects: [
+    { examName: "第2回 駿台全国模試", provider: "駿台" as const, date: "2024-10", subjects: [
       { name: "数学", score: Math.round(base * 1.08 + 8), maxScore: 100, deviation: base + 1 },
       { name: "国語", score: Math.round(base * 1.02 + 10), maxScore: 100, deviation: base + 2 },
       { name: "物理", score: Math.round(base * 0.98 + 13), maxScore: 100, deviation: base },

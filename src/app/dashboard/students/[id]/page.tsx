@@ -177,8 +177,13 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
                     return (
                       <tr key={exam.examName} className="border-b border-[var(--border)] last:border-b-0">
                         <td className="py-3 px-3">
-                          <div className="font-medium text-xs">{exam.examName}</div>
-                          <div className="text-xs text-[var(--muted)]">{exam.date}</div>
+                          <div className="flex items-center gap-1.5">
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${exam.provider === "駿台" ? "bg-sky-50 text-sky-600" : "bg-amber-50 text-amber-600"}`}>
+                              {exam.provider}
+                            </span>
+                            <span className="font-medium text-xs">{exam.examName.replace(/第\d回\s/, '')}</span>
+                          </div>
+                          <div className="text-xs text-[var(--muted)]">{exam.date}月実施</div>
                         </td>
                         {exam.subjects.map((sub) => (
                           <td key={sub.name} className="py-3 px-3 text-right">

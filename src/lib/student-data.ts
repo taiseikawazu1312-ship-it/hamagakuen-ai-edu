@@ -57,11 +57,11 @@ export const weeklyProgress = [
 ];
 
 export const comprehensionTrend = [
-  { period: "4月模試", english: 65, math: 58, japanese: 62, physics: 50, chemistry: 55 },
-  { period: "6月模試", english: 68, math: 60, japanese: 65, physics: 52, chemistry: 58 },
-  { period: "8月模試", english: 72, math: 63, japanese: 67, physics: 55, chemistry: 60 },
-  { period: "10月模試", english: 75, math: 65, japanese: 70, physics: 58, chemistry: 62 },
-  { period: "12月模試", english: 78, math: 68, japanese: 72, physics: 60, chemistry: 65 },
+  { period: "駿台全国①", english: 65, math: 58, japanese: 62, physics: 50, chemistry: 55 },
+  { period: "全統記述①", english: 68, math: 60, japanese: 65, physics: 52, chemistry: 58 },
+  { period: "全統共テ②", english: 72, math: 63, japanese: 67, physics: 55, chemistry: 60 },
+  { period: "駿台全国②", english: 75, math: 65, japanese: 70, physics: 58, chemistry: 62 },
+  { period: "全統共テ③", english: 78, math: 68, japanese: 72, physics: 60, chemistry: 65 },
 ];
 
 export const materials = [
