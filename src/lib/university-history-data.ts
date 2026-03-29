@@ -350,6 +350,163 @@ export const universityData: Record<string, UniversityHistoricalData> = {
     ],
     aiAdvice: "同志社商学部は基礎力勝負です。英語はターゲット1400レベルの語彙を完璧にし、数学は教科書レベルの問題を確実に解けるようにしましょう。基礎が固まれば合格は十分可能です。",
   },
+  "北海道大学 総合理系": {
+    universityId: "hokudai-sori", universityName: "北海道大学 総合理系",
+    requiredDeviation: 62.5, examType: "前期日程（総合入試）",
+    successProfile: {
+      deviationTrajectory: [
+        { month: "4月", overall: 53.0, subjects: { 数学: 54, 英語: 53, 国語: 50, 物理: 54, 化学: 52 }},
+        { month: "5月", overall: 54.5, subjects: { 数学: 56, 英語: 54, 国語: 51, 物理: 55, 化学: 53 }},
+        { month: "6月", overall: 55.5, subjects: { 数学: 57, 英語: 55, 国語: 52, 物理: 56, 化学: 55 }},
+        { month: "7月", overall: 57.0, subjects: { 数学: 59, 英語: 56, 国語: 53, 物理: 58, 化学: 56 }},
+        { month: "8月", overall: 58.5, subjects: { 数学: 60, 英語: 57, 国語: 54, 物理: 59, 化学: 58 }},
+        { month: "9月", overall: 59.5, subjects: { 数学: 61, 英語: 58, 国語: 55, 物理: 60, 化学: 59 }},
+        { month: "10月", overall: 60.5, subjects: { 数学: 62, 英語: 59, 国語: 56, 物理: 61, 化学: 60 }},
+        { month: "11月", overall: 61.0, subjects: { 数学: 63, 英語: 60, 国語: 57, 物理: 62, 化学: 61 }},
+        { month: "12月", overall: 62.0, subjects: { 数学: 64, 英語: 61, 国語: 58, 物理: 63, 化学: 62 }},
+        { month: "1月", overall: 63.0, subjects: { 数学: 65, 英語: 62, 国語: 58, 物理: 64, 化学: 63 }},
+      ],
+      subjectTargets: [
+        { subject: "数学", targetDeviation: 65.0, priority: "必須", notes: "数学III必須。微積分・線形代数の計算力が求められる。北大は標準的な良問が多い" },
+        { subject: "英語", targetDeviation: 62.0, priority: "必須", notes: "長文読解と英作文。語彙力と速読力の両方が必要" },
+        { subject: "物理", targetDeviation: 64.0, priority: "必須", notes: "力学・電磁気が中心。計算量はやや多め" },
+        { subject: "化学", targetDeviation: 63.0, priority: "重要", notes: "理論化学の計算と有機化学。無機の暗記も手を抜かない" },
+        { subject: "国語", targetDeviation: 58.0, priority: "補助", notes: "共通テストのみ。古文・漢文の基礎点を確実に" },
+      ],
+      keyMilestones: [
+        { month: "6月", description: "数学IAIIB完成・物理力学基礎完了", targetDeviation: 55.5 },
+        { month: "8月", description: "数学III基礎完了・理科基礎固め", targetDeviation: 58.5 },
+        { month: "10月", description: "北大実戦模試でC判定以上", targetDeviation: 60.5 },
+        { month: "11月", description: "過去問演習開始（直近7年分）", targetDeviation: 61.0 },
+        { month: "1月", description: "共通テスト78%以上", targetDeviation: 62.5 },
+      ],
+    },
+    failurePatterns: [
+      { description: "数学IIIの対策が遅れ、秋以降に計算ミスが多発", frequency: "very_common", affectedSubjects: ["数学"], preventionAdvice: "数学IIIは高2冬から先取りし、高3夏までに基礎計算力を完成させる" },
+      { description: "共通テストの地歴公民で大きく失点し、ボーダーに届かない", frequency: "common", affectedSubjects: ["国語"], preventionAdvice: "共通テストは12月から集中対策。特に地歴は暗記の仕上げを計画的に" },
+      { description: "北海道外の受験生に比べ、本番の緊張で実力が出せない", frequency: "occasional", affectedSubjects: ["数学", "物理"], preventionAdvice: "本番形式のシミュレーション（時間計測・教室環境）を11月から実施" },
+    ],
+    acceptanceRateTrends: [
+      { year: 2022, applicants: 3850, accepted: 1210, rate: 31.4, averageDeviation: 62.0 },
+      { year: 2023, applicants: 3920, accepted: 1195, rate: 30.5, averageDeviation: 62.3 },
+      { year: 2024, applicants: 4010, accepted: 1180, rate: 29.4, averageDeviation: 62.5 },
+      { year: 2025, applicants: 4100, accepted: 1170, rate: 28.5, averageDeviation: 62.8 },
+    ],
+    aiAdvice: "北大総合理系は「総合入試」で入学後に学部を選べる特徴があります。2次試験は標準的な良問が多く、奇問は少ないため、基礎を完璧に仕上げることが最重要です。数学IIIと理科2科目をバランスよく鍛えてください。共通テストの比率も高いため、12月からは共テ対策にも時間を確保しましょう。",
+  },
+  "北海道大学 文学部": {
+    universityId: "hokudai-bun", universityName: "北海道大学 文学部",
+    requiredDeviation: 60.0, examType: "前期日程",
+    successProfile: {
+      deviationTrajectory: [
+        { month: "4月", overall: 50.5, subjects: { 英語: 52, 数学: 48, 国語: 53 }},
+        { month: "5月", overall: 52.0, subjects: { 英語: 54, 数学: 49, 国語: 54 }},
+        { month: "6月", overall: 53.5, subjects: { 英語: 55, 数学: 51, 国語: 55 }},
+        { month: "7月", overall: 55.0, subjects: { 英語: 57, 数学: 52, 国語: 56 }},
+        { month: "8月", overall: 56.5, subjects: { 英語: 58, 数学: 53, 国語: 58 }},
+        { month: "9月", overall: 57.5, subjects: { 英語: 59, 数学: 54, 国語: 59 }},
+        { month: "10月", overall: 58.5, subjects: { 英語: 60, 数学: 55, 国語: 60 }},
+        { month: "11月", overall: 59.0, subjects: { 英語: 61, 数学: 56, 国語: 60 }},
+        { month: "12月", overall: 59.5, subjects: { 英語: 61, 数学: 56, 国語: 61 }},
+        { month: "1月", overall: 60.5, subjects: { 英語: 62, 数学: 57, 国語: 62 }},
+      ],
+      subjectTargets: [
+        { subject: "英語", targetDeviation: 62.0, priority: "必須", notes: "長文読解と英作文が中心。北大英語は標準的だが量が多い" },
+        { subject: "国語", targetDeviation: 62.0, priority: "必須", notes: "現代文・古文・漢文すべて出題。記述力が合否を分ける" },
+        { subject: "数学", targetDeviation: 57.0, priority: "重要", notes: "IAIIBの標準問題。苦手でも基礎で得点できればOK" },
+      ],
+      keyMilestones: [
+        { month: "7月", description: "英語・国語の基礎力完成", targetDeviation: 55.0 },
+        { month: "9月", description: "記述対策開始", targetDeviation: 57.5 },
+        { month: "11月", description: "過去問演習開始", targetDeviation: 59.0 },
+        { month: "1月", description: "共通テスト76%以上", targetDeviation: 60.0 },
+      ],
+    },
+    failurePatterns: [
+      { description: "国語の記述問題で必要な要素を書ききれない", frequency: "very_common", affectedSubjects: ["国語"], preventionAdvice: "高3夏から毎週記述答案を書いて添削を受ける" },
+      { description: "数学を完全に捨ててしまい、共テで足を引っ張る", frequency: "common", affectedSubjects: ["数学"], preventionAdvice: "数学は捨てずに基礎問題で5割取れるレベルを維持" },
+    ],
+    acceptanceRateTrends: [
+      { year: 2022, applicants: 680, accepted: 155, rate: 22.8, averageDeviation: 59.5 },
+      { year: 2023, applicants: 700, accepted: 152, rate: 21.7, averageDeviation: 60.0 },
+      { year: 2024, applicants: 720, accepted: 150, rate: 20.8, averageDeviation: 60.2 },
+      { year: 2025, applicants: 735, accepted: 148, rate: 20.1, averageDeviation: 60.5 },
+    ],
+    aiAdvice: "北大文学部は英語と国語の記述力が合否を分けます。特に国語は現代文・古文・漢文のすべてが出題されるため、バランスよく対策してください。数学は捨てずに基礎点を確保しましょう。",
+  },
+  "小樽商科大学 商学部": {
+    universityId: "otaru-sho", universityName: "小樽商科大学 商学部",
+    requiredDeviation: 55.0, examType: "前期日程",
+    successProfile: {
+      deviationTrajectory: [
+        { month: "4月", overall: 45.5, subjects: { 英語: 47, 数学: 44, 国語: 46 }},
+        { month: "5月", overall: 47.0, subjects: { 英語: 48, 数学: 45, 国語: 47 }},
+        { month: "6月", overall: 48.5, subjects: { 英語: 50, 数学: 47, 国語: 48 }},
+        { month: "7月", overall: 50.0, subjects: { 英語: 52, 数学: 48, 国語: 50 }},
+        { month: "8月", overall: 51.5, subjects: { 英語: 53, 数学: 50, 国語: 51 }},
+        { month: "9月", overall: 52.5, subjects: { 英語: 54, 数学: 51, 国語: 52 }},
+        { month: "10月", overall: 53.5, subjects: { 英語: 55, 数学: 52, 国語: 53 }},
+        { month: "11月", overall: 54.0, subjects: { 英語: 56, 数学: 52, 国語: 54 }},
+        { month: "12月", overall: 54.5, subjects: { 英語: 56, 数学: 53, 国語: 54 }},
+        { month: "1月", overall: 55.5, subjects: { 英語: 57, 数学: 54, 国語: 55 }},
+      ],
+      subjectTargets: [
+        { subject: "英語", targetDeviation: 57.0, priority: "必須", notes: "商学部は英語重視。長文読解の正確性と速度が鍵" },
+        { subject: "数学", targetDeviation: 54.0, priority: "重要", notes: "IAIIBの基本問題中心。計算ミスをなくすことが重要" },
+        { subject: "国語", targetDeviation: 55.0, priority: "重要", notes: "現代文中心。共テ対策をしっかりと" },
+      ],
+      keyMilestones: [
+        { month: "7月", description: "全科目の基礎固め完了", targetDeviation: 50.0 },
+        { month: "9月", description: "過去問分析開始", targetDeviation: 52.5 },
+        { month: "11月", description: "過去問で合格ライン突破", targetDeviation: 54.0 },
+        { month: "1月", description: "共通テスト70%以上", targetDeviation: 55.0 },
+      ],
+    },
+    failurePatterns: [
+      { description: "英語の語彙力不足で長文が時間内に読めない", frequency: "very_common", affectedSubjects: ["英語"], preventionAdvice: "ターゲット1400を高3夏までに完成。毎日30分の長文音読を継続" },
+      { description: "共テの社会科目で想定外の低得点", frequency: "common", affectedSubjects: ["国語"], preventionAdvice: "社会科目は11月から集中暗記。過去問5年分を3周する" },
+    ],
+    acceptanceRateTrends: [
+      { year: 2022, applicants: 1200, accepted: 475, rate: 39.6, averageDeviation: 54.5 },
+      { year: 2023, applicants: 1180, accepted: 470, rate: 39.8, averageDeviation: 55.0 },
+      { year: 2024, applicants: 1150, accepted: 465, rate: 40.4, averageDeviation: 55.0 },
+      { year: 2025, applicants: 1130, accepted: 460, rate: 40.7, averageDeviation: 55.2 },
+    ],
+    aiAdvice: "小樽商科大学は英語力が合否を大きく左右します。2次試験の英語は標準レベルですが、正確に読む力が求められます。基礎を丁寧に固めれば十分に合格可能です。北海道内では就職に強い大学として人気があります。",
+  },
+  "北海学園大学 経済学部": {
+    universityId: "hokkai-keizai", universityName: "北海学園大学 経済学部",
+    requiredDeviation: 47.5, examType: "一般入試（2〜3科目型）",
+    successProfile: {
+      deviationTrajectory: [
+        { month: "4月", overall: 38.0, subjects: { 英語: 39, 数学: 37, 国語: 38 }},
+        { month: "6月", overall: 40.5, subjects: { 英語: 42, 数学: 39, 国語: 40 }},
+        { month: "8月", overall: 43.0, subjects: { 英語: 44, 数学: 42, 国語: 43 }},
+        { month: "10月", overall: 45.5, subjects: { 英語: 47, 数学: 44, 国語: 45 }},
+        { month: "1月", overall: 48.0, subjects: { 英語: 49, 数学: 47, 国語: 48 }},
+      ],
+      subjectTargets: [
+        { subject: "英語", targetDeviation: 49.0, priority: "必須", notes: "基礎的な長文読解と文法。ターゲット1200レベルの語彙で対応可能" },
+        { subject: "数学", targetDeviation: 47.0, priority: "重要", notes: "IAの基本問題が中心。教科書の例題レベルを確実に" },
+        { subject: "国語", targetDeviation: 48.0, priority: "重要", notes: "現代文の基本的な読解力。漢字の読み書きも出題" },
+      ],
+      keyMilestones: [
+        { month: "8月", description: "基礎問題集を1周完了", targetDeviation: 43.0 },
+        { month: "10月", description: "過去問で5割以上得点", targetDeviation: 45.5 },
+        { month: "1月", description: "過去問で合格ライン突破", targetDeviation: 47.5 },
+      ],
+    },
+    failurePatterns: [
+      { description: "基礎が固まらないまま過去問に入ってしまう", frequency: "very_common", affectedSubjects: ["英語", "数学"], preventionAdvice: "10月までは教科書レベルの基礎に専念。焦って応用に手を出さない" },
+    ],
+    acceptanceRateTrends: [
+      { year: 2022, applicants: 3200, accepted: 2080, rate: 65.0, averageDeviation: 47.0 },
+      { year: 2023, applicants: 3100, accepted: 2020, rate: 65.2, averageDeviation: 47.2 },
+      { year: 2024, applicants: 3050, accepted: 1980, rate: 64.9, averageDeviation: 47.5 },
+      { year: 2025, applicants: 3000, accepted: 1960, rate: 65.3, averageDeviation: 47.5 },
+    ],
+    aiAdvice: "北海学園大学は基礎力を問う問題が中心です。教科書レベルの問題を確実に解けるようにすれば合格は十分可能です。英語は毎日の単語学習を欠かさず、数学は教科書の例題・章末問題を繰り返し解きましょう。",
+  },
 };
 
 // ヘルパー: 生徒の志望校名からデータを取得

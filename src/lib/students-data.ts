@@ -89,12 +89,12 @@ export const studentsList: StudentDetail[] = [
   },
   {
     id: "s004", name: "高橋 健太", class: "Bクラス", grade: "高2",
-    latestScore: 242, trend: "down", targetSchool: "大阪大学 工学部", deviation: 57.1,
+    latestScore: 242, trend: "down", targetSchool: "北海道大学 総合理系", deviation: 57.1,
     avatarInitial: "高", tags: ["成績低下中", "物理好き"],
-    targetDepartment: "", entranceMethod: "一般入試", targetDeviation: 62.0,
+    targetDepartment: "", entranceMethod: "一般入試", targetDeviation: 62.5,
     strengths: ["物理への興味・関心が高い", "物理の記述問題の質が良い"],
     weaknesses: ["数学・国語とも下降傾向", "宿題の提出率が低下（80%→60%）", "集中力の持続に課題"],
-    aiComment: "高橋くんは2学期に入って成績が下降傾向にあります。宿題提出率も80%から60%に低下しており、学習習慣の乱れが懸念されます。物理への興味は強く、物理を起点にしたモチベーション回復が有効と考えます。まず宿題提出率を80%以上に戻すことが最優先です。保護者との面談を推奨します。",
+    aiComment: "高橋くんは2学期に入って成績が下降傾向にあります。宿題提出率も80%から60%に低下しており、学習習慣の乱れが懸念されます。物理への興味は強く、物理を起点にしたモチベーション回復が有効と考えます。北大総合理系の合格には偏差値62.5が必要で、現状から5.4の改善が求められます。まず宿題提出率を80%以上に戻すことが最優先です。",
   },
   {
     id: "s005", name: "田中 陽菜", class: "Bクラス", grade: "高2",
@@ -107,12 +107,12 @@ export const studentsList: StudentDetail[] = [
   },
   {
     id: "s006", name: "伊藤 龍之介", class: "Cクラス", grade: "高2",
-    latestScore: 210, trend: "flat", targetSchool: "神戸大学 法学部", deviation: 52.3,
+    latestScore: 210, trend: "flat", targetSchool: "小樽商科大学 商学部", deviation: 52.3,
     avatarInitial: "伊", tags: ["基礎固め中", "数学苦手"],
-    targetDepartment: "", entranceMethod: "一般入試", targetDeviation: 60.0,
+    targetDepartment: "", entranceMethod: "一般入試", targetDeviation: 55.0,
     strengths: ["国語の漢字・語彙力は高い", "真面目な性格で指示に従える"],
-    weaknesses: ["数学全般が苦手（偏差値48）", "文章題の立式ができない", "化学の暗記事項の定着が弱い"],
-    aiComment: "伊藤くんは数学の偏差値が48と他科目に比べて大きく足を引っ張っています。文章題を読んで式を立てる力が不足しており、「何を求めるか」を整理する訓練が必要です。神戸大学法学部の合格には偏差値60が必要で、現在の52.3からは大幅な改善が求められます。数学に集中投資する戦略を推奨します。",
+    weaknesses: ["数学全般が苦手（偏差値48）", "文章題の立式ができない", "英語の語彙力が不足"],
+    aiComment: "伊藤くんは数学の偏差値が48と他科目に比べて足を引っ張っています。文章題を読んで式を立てる力が不足しており、「何を求めるか」を整理する訓練が必要です。小樽商科大学の合格には偏差値55が必要で、現在の52.3からあと2.7の改善で到達可能です。英語の語彙力強化と数学の基礎固めを並行して進めましょう。",
   },
   {
     id: "s007", name: "中村 さくら", class: "Sクラス", grade: "高2",
@@ -125,12 +125,12 @@ export const studentsList: StudentDetail[] = [
   },
   {
     id: "s008", name: "小林 大翔", class: "Cクラス", grade: "高2",
-    latestScore: 198, trend: "up", targetSchool: "同志社大学 商学部", deviation: 50.5,
+    latestScore: 198, trend: "up", targetSchool: "北海学園大学 経済学部", deviation: 50.5,
     avatarInitial: "小", tags: ["急成長中", "数学改善"],
-    targetDepartment: "", entranceMethod: "一般入試", targetDeviation: 55.0,
+    targetDepartment: "", entranceMethod: "一般入試", targetDeviation: 47.5,
     strengths: ["この2ヶ月で偏差値が4上昇", "数学の基礎計算力が改善", "前向きな学習態度"],
     weaknesses: ["全科目で基礎の抜けが多い", "テスト慣れしていない", "時間配分に課題"],
-    aiComment: "小林くんはこの2ヶ月で偏差値が46.5から50.5へと大きく伸びました。基礎計算ドリルの効果が出ています。まだ全科目で基礎の抜けがありますが、改善傾向は明確です。同志社大学の合格ライン55まであと偏差値4.5。このペースを維持すれば12月末には到達可能です。模試形式の練習を増やすことを推奨します。",
+    aiComment: "小林くんはこの2ヶ月で偏差値が46.5から50.5へと大きく伸びました。基礎計算ドリルの効果が出ています。北海学園大学の合格ライン47.5は既にクリアしており、このペースを維持すれば安定した合格が見込めます。さらに上位の大学も視野に入れられるよう、基礎の穴を埋めていきましょう。",
   },
 ];
 
