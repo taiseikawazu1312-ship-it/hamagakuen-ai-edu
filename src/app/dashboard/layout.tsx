@@ -53,13 +53,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setRunTour(true)}
-                className="p-2 text-[var(--muted)] hover:text-[var(--primary)] hover:bg-[var(--accent)] rounded-lg transition-colors"
+                className="p-2.5 text-[var(--muted)] hover:text-[var(--primary)] hover:bg-[var(--accent)] rounded-lg transition-colors"
                 title="ガイドツアー"
               >
                 <HelpCircle className="w-5 h-5" />
               </button>
               <NotificationPanel variant="dashboard" />
-              <Link href="/dashboard/upload" className="btn-primary flex items-center gap-2 text-sm whitespace-nowrap">
+              <Link href="/dashboard/upload" className="btn-primary flex items-center gap-2 text-sm whitespace-nowrap hidden sm:flex">
                 <Upload className="w-4 h-4" />資料アップロード
               </Link>
             </div>
@@ -78,9 +78,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   key={tab.href}
                   href={tab.href}
                   data-tour={tab.tourId}
-                  className={`flex items-center gap-2 px-4 py-3 text-sm whitespace-nowrap transition-colors ${isActive ? "tab-active" : "tab-inactive"}`}
+                  className={`flex items-center gap-1.5 px-3 sm:px-4 py-3 text-xs sm:text-sm whitespace-nowrap transition-colors ${isActive ? "tab-active" : "tab-inactive"}`}
                 >
-                  <Icon className="w-4 h-4" />{tab.label}
+                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  <span className="hidden sm:inline">{tab.label}</span>
                 </Link>
               );
             })}

@@ -75,7 +75,7 @@ export default function StudentsPage() {
               <button
                 key={c}
                 onClick={() => setClassFilter(c)}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${classFilter === c ? "bg-[var(--primary)] text-white" : "bg-white border border-[var(--border)] text-[var(--muted)] hover:border-[var(--primary-light)]"}`}
+                className={`px-3 py-2 text-xs font-medium rounded-lg transition-colors ${classFilter === c ? "bg-[var(--primary)] text-white" : "bg-white border border-[var(--border)] text-[var(--muted)] hover:border-[var(--primary-light)]"}`}
               >
                 {c}
               </button>
@@ -86,7 +86,7 @@ export default function StudentsPage() {
               <button
                 key={t.value}
                 onClick={() => setTrendFilter(t.value)}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${trendFilter === t.value ? "bg-[var(--primary)] text-white" : "bg-white border border-[var(--border)] text-[var(--muted)] hover:border-[var(--primary-light)]"}`}
+                className={`px-3 py-2 text-xs font-medium rounded-lg transition-colors ${trendFilter === t.value ? "bg-[var(--primary)] text-white" : "bg-white border border-[var(--border)] text-[var(--muted)] hover:border-[var(--primary-light)]"}`}
               >
                 {t.label}
               </button>

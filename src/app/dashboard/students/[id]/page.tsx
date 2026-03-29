@@ -170,10 +170,10 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
 
       {/* Tab Switcher */}
       <FadeIn delay={300}>
-        <div className="flex gap-1 bg-white border border-[var(--border)] rounded-xl p-1 w-fit overflow-x-auto">
-          {([["learning", "学習状況"], ["tasks", "タスク管理"], ["exams", "模試成績"], ["units", "単元別成績"], ["trend", "偏差値推移"], ["univ", "合格者比較"]] as const).map(([key, label]) => (
+        <div className="flex gap-1 bg-white border border-[var(--border)] rounded-xl p-1 overflow-x-auto">
+          {([["learning", "学習状況"], ["tasks", "タスク"], ["exams", "模試"], ["units", "単元別"], ["trend", "推移"], ["univ", "合格者"]] as const).map(([key, label]) => (
             <button key={key} onClick={() => setActiveTab(key)}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${activeTab === key ? "bg-[var(--primary)] text-white" : "text-[var(--muted)] hover:bg-[var(--background)]"}`}>
+              className={`px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${activeTab === key ? "bg-[var(--primary)] text-white" : "text-[var(--muted)] hover:bg-[var(--background)]"}`}>
               {label}
             </button>
           ))}
@@ -248,10 +248,10 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
 
             {/* Section bar chart */}
             <ResponsiveContainer width="100%" height={Math.max(200, filteredSections.length * 38 + 40)}>
-              <BarChart data={filteredSections} layout="vertical" margin={{ left: 120 }}>
+              <BarChart data={filteredSections} layout="vertical" margin={{ left: 80 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
                 <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11 }} unit="%" />
-                <YAxis type="category" dataKey="sectionName" tick={{ fontSize: 11 }} width={115} />
+                <YAxis type="category" dataKey="sectionName" tick={{ fontSize: 10 }} width={75} />
                 <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #e2e8f0" }} />
                 <Legend />
                 <Bar dataKey="avgScore" name="生徒" fill="#2563eb" radius={[0, 4, 4, 0]} barSize={12} animationDuration={1200} />
