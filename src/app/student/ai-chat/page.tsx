@@ -2,7 +2,7 @@
 
 import { useChat } from "@ai-sdk/react";
 import { useState, useRef, useEffect } from "react";
-import { Send, Bot, Zap } from "lucide-react";
+import { Send, Bot, Zap, AlertCircle } from "lucide-react";
 import type { UIMessage } from "ai";
 
 const quickQuestions = [
@@ -69,8 +69,9 @@ function getMessageText(message: UIMessage): string {
 
 export default function AiChatPage() {
   const [input, setInput] = useState("");
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, error, clearError } = useChat({
     messages: initialMessages,
+    onError: () => {},
   });
   const chatRef = useRef<HTMLDivElement>(null);
   const isLoading = status === "streaming" || status === "submitted";
@@ -165,6 +166,20 @@ export default function AiChatPage() {
                 <span className="typing-dot w-2 h-2 bg-gray-400 rounded-full inline-block" />
                 <span className="typing-dot w-2 h-2 bg-gray-400 rounded-full inline-block" />
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Error display */}
+        {error && (
+          <div className="flex gap-3 justify-start">
+            <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+              <AlertCircle className="w-4 h-4 text-red-500" />
+            </div>
+            <div className="max-w-[75%] rounded-2xl px-4 py-3 bg-red-50 border border-red-200">
+              <p className="text-sm text-red-700 font-medium mb-1">���ラーが発生しました</p>
+              <p className="text-xs text-red-600">AI学習アシス���ントに接続できませんでした。しばらく待ってから再度お試しください。</p>
+              <button onClick={clearError} className="mt-2 text-xs text-red-700 underline hover:text-red-900">閉じる</button>
             </div>
           </div>
         )}
