@@ -21,6 +21,7 @@ const tabs = [
   { label: "施策提案", href: "/dashboard/proposals", icon: Lightbulb },
   { label: "レポート生成", href: "/dashboard/reports", icon: FileText },
   { label: "生徒管理", href: "/dashboard/students", icon: Users },
+  { label: "資料管理", href: "/dashboard/upload", icon: Upload },
 ];
 
 export default function DashboardLayout({
@@ -67,7 +68,7 @@ export default function DashboardLayout({
                 className="btn-primary flex items-center gap-2 text-sm whitespace-nowrap"
               >
                 <Upload className="w-4 h-4" />
-                成績表をアップロード
+                資料アップロード
               </Link>
             </div>
           </div>
