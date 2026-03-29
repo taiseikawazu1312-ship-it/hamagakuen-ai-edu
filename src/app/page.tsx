@@ -129,36 +129,6 @@ export default function Home() {
             </FadeIn>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FadeIn delay={100}>
-                <Link href="/dashboard" className="block">
-                  <div className="card card-hover cursor-pointer h-full transition-all duration-200 shadow-lg border-l-4 border-l-[var(--primary)]">
-                    <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-[var(--accent)] flex items-center justify-center">
-                        <BarChart3 className="w-7 h-7 text-[var(--primary)]" />
-                      </div>
-                      <div className="flex-1">
-                        <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">
-                          学年全体の分析
-                        </h2>
-                        <p className="text-sm text-[var(--muted)] mb-3">
-                          過年度比較・学力成長評価・AI要因分析・施策提案・レポート生成・資料管理など、学年全体の成績を俯瞰する機能。
-                        </p>
-                        <div className="flex flex-wrap gap-2 mb-3">
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 font-medium">過去年度比較</span>
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 font-medium">AI要因分析</span>
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 font-medium">施策提案</span>
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 font-medium">レポート</span>
-                        </div>
-                        <div className="flex items-center text-[var(--primary)] text-sm font-medium">
-                          学年全体の分析を開く
-                          <ArrowRight className="w-4 h-4 ml-1" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </FadeIn>
-
-              <FadeIn delay={200}>
                 <Link href="/dashboard/students" className="block">
                   <div className="card card-hover cursor-pointer h-full transition-all duration-200 shadow-lg border-l-4 border-l-purple-500">
                     <div className="flex items-start gap-4">
@@ -180,6 +150,36 @@ export default function Home() {
                         </div>
                         <div className="flex items-center text-purple-600 text-sm font-medium">
                           個別生徒の分析を開く
+                          <ArrowRight className="w-4 h-4 ml-1" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </FadeIn>
+
+              <FadeIn delay={200}>
+                <Link href="/dashboard" className="block">
+                  <div className="card card-hover cursor-pointer h-full transition-all duration-200 shadow-lg border-l-4 border-l-[var(--primary)]">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-[var(--accent)] flex items-center justify-center">
+                        <BarChart3 className="w-7 h-7 text-[var(--primary)]" />
+                      </div>
+                      <div className="flex-1">
+                        <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">
+                          学年全体の分析
+                        </h2>
+                        <p className="text-sm text-[var(--muted)] mb-3">
+                          過年度比較・学力成長評価・AI要因分析・施策提案・レポート生成・資料管理など、学年全体の成績を俯瞰する機能。
+                        </p>
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 font-medium">過去年度比較</span>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 font-medium">AI要因分析</span>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 font-medium">施策提案</span>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 font-medium">レポート</span>
+                        </div>
+                        <div className="flex items-center text-[var(--primary)] text-sm font-medium">
+                          学年全体の分析を開く
                           <ArrowRight className="w-4 h-4 ml-1" />
                         </div>
                       </div>
