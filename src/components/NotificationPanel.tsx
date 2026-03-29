@@ -14,8 +14,7 @@ interface Notification {
 }
 
 const demoNotifications: Notification[] = [
-  { id: 1, icon: <AlertTriangle className="w-4 h-4 text-amber-500" />, title: "出席率低下アラート", message: "高橋健太の出席率が78%に低下しています", time: "10分前", read: false, type: "warning" },
-  { id: 2, icon: <CheckCircle2 className="w-4 h-4 text-emerald-500" />, title: "模試解析完了", message: "第4回全国模試の成績データ解析が完了しました", time: "1時間前", read: false, type: "success" },
+  { id: 2, icon: <CheckCircle2 className="w-4 h-4 text-emerald-500" />, title: "模試解析完了", message: "第2回駿台全国模試の成績データ解析が完了しました", time: "1時間前", read: false, type: "success" },
   { id: 3, icon: <TrendingDown className="w-4 h-4 text-red-500" />, title: "偏差値低下注意", message: "中村さくらの国語偏差値が2ヶ月連続で低下", time: "3時間前", read: false, type: "warning" },
   { id: 4, icon: <BookOpen className="w-4 h-4 text-blue-500" />, title: "新教材追加", message: "数学IIB微分積分の演習問題セットが追加されました", time: "昨日", read: true, type: "info" },
   { id: 5, icon: <Calendar className="w-4 h-4 text-purple-500" />, title: "面談リマインダー", message: "明日14:00〜 山田太一保護者面談", time: "昨日", read: true, type: "info" },
