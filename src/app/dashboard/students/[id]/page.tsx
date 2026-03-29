@@ -43,6 +43,7 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
   const [unitSubject, setUnitSubject] = useState("math");
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const [localTasks, setLocalTasks] = useState<LearningTask[]>([]);
+  const [selectedWeek, setSelectedWeek] = useState(-1); // -1 = latest
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskSubject, setNewTaskSubject] = useState("数学");
   const [newTaskDuration, setNewTaskDuration] = useState(30);
@@ -69,8 +70,11 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
   const gapToTarget = student.targetDeviation - student.deviation;
   const subjectList = curriculum.map(s => ({ id: s.subjectId, name: s.subjectName }));
 
-  // タスク管理: 元データ + ローカル追加分を結合
-  const allTasks = [...(learningProfile?.tasks || []), ...localTasks];
+  // タスク管理: 選択中の週のタスク + ローカル追加分
+  const weekSets = learningProfile?.weeklyTaskSets || [];
+  const currentWeekIdx = selectedWeek < 0 ? weekSets.length - 1 : selectedWeek;
+  const currentWeek = weekSets[currentWeekIdx];
+  const allTasks = [...(currentWeek?.tasks || []), ...(currentWeekIdx === weekSets.length - 1 ? localTasks : [])];
   const completedTasks = allTasks.filter(t => t.completed).length;
 
   const addTask = () => {
@@ -563,62 +567,92 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
       {/* === タスク管理タブ === */}
       {activeTab === "tasks" && (
         <div className="space-y-4">
-          {/* タスク追加フォーム */}
-          <FadeIn delay={100}>
-            <div className="card">
-              <div className="flex items-center gap-2 mb-4">
-                <Plus className="w-5 h-5 text-[var(--primary)]" />
-                <h3 className="text-sm font-bold">タスクを追加</h3>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--accent)] text-[var(--primary)] font-medium">先生から割り当て</span>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
-                <input type="text" value={newTaskTitle} onChange={e => setNewTaskTitle(e.target.value)} placeholder="タスク名を入力..."
-                  className="px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)] sm:col-span-2" />
-                <select value={newTaskSubject} onChange={e => setNewTaskSubject(e.target.value)}
-                  className="px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)]">
-                  {["数学", "英語", "国語", "物理", "化学"].map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-                <div className="flex gap-2">
-                  <input type="number" value={newTaskDuration} onChange={e => setNewTaskDuration(Number(e.target.value))} min={5} max={120}
-                    className="w-20 px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)]" />
-                  <span className="text-sm text-[var(--muted)] self-center">分</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex gap-2">
-                  {(["高", "中", "低"] as const).map(p => (
-                    <button key={p} onClick={() => setNewTaskPriority(p)}
-                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${newTaskPriority === p ? "bg-[var(--primary)] text-white" : "bg-[var(--background)] text-[var(--muted)] border border-[var(--border)]"}`}>
-                      重要度{p}
-                    </button>
-                  ))}
-                </div>
-                <button onClick={addTask} disabled={!newTaskTitle.trim()}
-                  className="btn-primary text-sm flex items-center gap-1.5 disabled:opacity-50">
-                  <Plus className="w-4 h-4" />タスクを追加
+          {/* 週選択 */}
+          <FadeIn delay={50}>
+            <div className="flex items-center gap-2 overflow-x-auto pb-1">
+              {weekSets.map((ws, i) => (
+                <button key={ws.weekNumber} onClick={() => setSelectedWeek(i)}
+                  className={`flex-shrink-0 px-3 py-2 text-xs font-medium rounded-lg border transition-colors ${currentWeekIdx === i
+                    ? "bg-[var(--primary)] text-white border-[var(--primary)]"
+                    : "bg-white text-[var(--muted)] border-[var(--border)] hover:border-[var(--primary-light)]"}`}>
+                  <div>{ws.weekLabel}</div>
+                  <div className={`text-[10px] mt-0.5 ${currentWeekIdx === i ? "text-white/70" : "text-[var(--muted)]"}`}>
+                    完了率 {ws.completionRate}%
+                  </div>
                 </button>
-              </div>
+              ))}
             </div>
           </FadeIn>
+
+          {/* 週サマリー */}
+          {currentWeek && (
+            <FadeIn delay={100}>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="card text-center py-3">
+                  <p className="text-lg font-bold">{completedTasks}/{allTasks.length}</p>
+                  <p className="text-xs text-[var(--muted)]">タスク完了</p>
+                </div>
+                <div className="card text-center py-3">
+                  <p className="text-lg font-bold">{currentWeek.completedMinutes}分</p>
+                  <p className="text-xs text-[var(--muted)]">学習時間 / {currentWeek.totalMinutes}分</p>
+                </div>
+                <div className="card text-center py-3">
+                  <p className={`text-lg font-bold ${currentWeek.completionRate >= 80 ? "text-[var(--success)]" : currentWeek.completionRate >= 60 ? "text-[var(--warning)]" : "text-[var(--danger)]"}`}>{currentWeek.completionRate}%</p>
+                  <p className="text-xs text-[var(--muted)]">完了率</p>
+                </div>
+              </div>
+            </FadeIn>
+          )}
+
+          {/* タスク追加（今週のみ） */}
+          {currentWeekIdx === weekSets.length - 1 && (
+            <FadeIn delay={150}>
+              <div className="card">
+                <div className="flex items-center gap-2 mb-3">
+                  <Plus className="w-4 h-4 text-[var(--primary)]" />
+                  <h3 className="text-xs font-bold">タスクを追加</h3>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--accent)] text-[var(--primary)] font-medium">先生から割り当て</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <input type="text" value={newTaskTitle} onChange={e => setNewTaskTitle(e.target.value)} placeholder="タスク名..."
+                    className="flex-1 min-w-[180px] px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)]" />
+                  <select value={newTaskSubject} onChange={e => setNewTaskSubject(e.target.value)}
+                    className="px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm">
+                    {["数学", "英語", "国語", "物理", "化学"].map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                  <input type="number" value={newTaskDuration} onChange={e => setNewTaskDuration(Number(e.target.value))} min={5} max={120}
+                    className="w-16 px-2 py-2 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm" />
+                  <span className="text-xs text-[var(--muted)] self-center">分</span>
+                  <div className="flex gap-1">
+                    {(["高", "中", "低"] as const).map(p => (
+                      <button key={p} onClick={() => setNewTaskPriority(p)}
+                        className={`px-2 py-1.5 text-[10px] font-medium rounded transition-colors ${newTaskPriority === p ? "bg-[var(--primary)] text-white" : "bg-[var(--background)] text-[var(--muted)] border border-[var(--border)]"}`}>{p}</button>
+                    ))}
+                  </div>
+                  <button onClick={addTask} disabled={!newTaskTitle.trim()} className="btn-primary text-xs px-3 py-2 disabled:opacity-50">追加</button>
+                </div>
+              </div>
+            </FadeIn>
+          )}
 
           {/* タスク一覧 */}
           <FadeIn delay={200}>
             <div className="card">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <ListChecks className="w-5 h-5 text-[var(--primary)]" />
-                  <h3 className="text-sm font-bold">タスク一覧</h3>
+                  <ListChecks className="w-4 h-4 text-[var(--primary)]" />
+                  <h3 className="text-sm font-bold">{currentWeek?.weekLabel || ""} のタスク</h3>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
-                  <span>完了 {completedTasks}/{allTasks.length}</span>
-                  <div className="w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <span>{completedTasks}/{allTasks.length}</span>
+                  <div className="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                     <div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${allTasks.length > 0 ? (completedTasks / allTasks.length) * 100 : 0}%` }} />
                   </div>
                 </div>
               </div>
               <div className="space-y-2">
                 {allTasks.map(task => (
-                  <div key={task.id} className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${task.completed ? "bg-gray-50 border-gray-200" : "bg-white border-[var(--border)] hover:border-[var(--primary-light)]"}`}>
+                  <div key={task.id} className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${task.completed ? "bg-gray-50 border-gray-200" : "bg-white border-[var(--border)]"}`}>
                     {task.completed ? <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0" /> : <Circle className="w-5 h-5 text-gray-300 flex-shrink-0" />}
                     <div className="flex-1 min-w-0">
                       <p className={`text-sm font-medium ${task.completed ? "text-gray-400 line-through" : ""}`}>{task.title}</p>
@@ -631,15 +665,52 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
                         {task.completedDate && <span className="text-xs text-[var(--muted)]">完了: {task.completedDate}</span>}
                       </div>
                     </div>
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${task.priority === "高" ? "bg-red-100 text-red-700" : task.priority === "中" ? "bg-yellow-100 text-yellow-700" : "bg-gray-100 text-gray-600"}`}>
-                      {task.priority}
-                    </span>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${task.priority === "高" ? "bg-red-100 text-red-700" : task.priority === "中" ? "bg-yellow-100 text-yellow-700" : "bg-gray-100 text-gray-600"}`}>{task.priority}</span>
                   </div>
                 ))}
-                {allTasks.length === 0 && <p className="text-sm text-[var(--muted)] text-center py-8">タスクがありません</p>}
+                {allTasks.length === 0 && <p className="text-sm text-[var(--muted)] text-center py-8">この週のタスクはありません</p>}
               </div>
             </div>
           </FadeIn>
+
+          {/* カリキュラム全体進捗 */}
+          {learningProfile?.curriculumProgress && (
+            <FadeIn delay={300}>
+              <div className="card">
+                <div className="flex items-center gap-2 mb-4">
+                  <BookOpen className="w-5 h-5 text-[var(--primary)]" />
+                  <h3 className="text-sm font-bold">カリキュラム全体の進捗</h3>
+                </div>
+                <div className="space-y-4">
+                  {learningProfile.curriculumProgress.map(cp => {
+                    const progressColor = cp.progressPercent >= 70 ? "#10b981" : cp.progressPercent >= 40 ? "#f59e0b" : "#ef4444";
+                    return (
+                      <div key={cp.subjectId}>
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-sm font-semibold">{cp.subjectName}</span>
+                          <span className="text-xs text-[var(--muted)]">{cp.completedUnits}/{cp.totalUnits}単元 ({cp.progressPercent}%)</span>
+                        </div>
+                        <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden mb-2">
+                          <div className="h-full rounded-full transition-all duration-500" style={{ width: `${cp.progressPercent}%`, backgroundColor: progressColor }} />
+                        </div>
+                        <div className="flex gap-1 flex-wrap">
+                          {cp.sections.map(sec => (
+                            <span key={sec.sectionName} className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
+                              sec.status === "completed" ? "bg-emerald-50 text-emerald-600" :
+                              sec.status === "in_progress" ? "bg-amber-50 text-amber-600" :
+                              "bg-gray-50 text-gray-400"
+                            }`}>
+                              {sec.sectionName}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </FadeIn>
+          )}
         </div>
       )}
 

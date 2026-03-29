@@ -42,6 +42,23 @@ export default function GrowthPage() {
 
   return (
     <div className="space-y-6">
+      <FadeIn>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-bold text-[var(--foreground)]">学力成長評価</h2>
+            <p className="text-sm text-[var(--muted)]">入塾時からの偏差値推移と施策効果を確認</p>
+          </div>
+          <div className="relative">
+            <select className="appearance-none bg-white border border-gray-200 rounded-lg px-3 py-2 pr-8 text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--primary)]">
+              <option>2024年度（通年）</option>
+              <option>2023年度（通年）</option>
+              <option>2022年度（通年）</option>
+            </select>
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none">▼</span>
+          </div>
+        </div>
+      </FadeIn>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <FadeIn delay={0} className="lg:col-span-2">
           <div className="card">

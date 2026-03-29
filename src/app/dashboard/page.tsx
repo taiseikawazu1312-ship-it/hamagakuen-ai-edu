@@ -51,6 +51,25 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      {/* Header with exam selector */}
+      <FadeIn>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-bold text-[var(--foreground)]">過去年度比較</h2>
+            <p className="text-sm text-[var(--muted)]">模試成績の年度間推移を比較分析</p>
+          </div>
+          <div className="relative">
+            <select className="appearance-none bg-white border border-[var(--border)] rounded-lg px-3 py-2 pr-8 text-sm text-[var(--foreground)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent">
+              <option>第2回 駿台全国模試（10月）</option>
+              <option>第2回 全統共通テスト模試（8月）</option>
+              <option>第1回 全統記述模試（6月）</option>
+              <option>第1回 駿台全国模試（5月）</option>
+            </select>
+            <TrendingDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)] pointer-events-none" />
+          </div>
+        </div>
+      </FadeIn>
+
       {/* Stat Cards */}
       <div data-tour="stat-cards" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((stat, i) => (

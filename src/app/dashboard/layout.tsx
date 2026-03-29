@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  BarChart3, TrendingUp, Brain, FileText, Upload, ChevronDown, Users, HelpCircle,
+  BarChart3, TrendingUp, Brain, FileText, Upload, Users, HelpCircle,
 } from "lucide-react";
 import DemoBanner from "@/components/DemoBanner";
 import NotificationPanel from "@/components/NotificationPanel";
@@ -59,14 +59,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <HelpCircle className="w-5 h-5" />
               </button>
               <NotificationPanel variant="dashboard" />
-              <div className="relative">
-                <select className="appearance-none bg-white border border-[var(--border)] rounded-lg px-3 py-2 pr-8 text-sm text-[var(--foreground)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent">
-                  <option>2024年度 2学期 模試</option>
-                  <option>2024年度 1学期 模試</option>
-                  <option>2023年度 2学期 模試</option>
-                </select>
-                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)] pointer-events-none" />
-              </div>
               <Link href="/dashboard/upload" className="btn-primary flex items-center gap-2 text-sm whitespace-nowrap">
                 <Upload className="w-4 h-4" />資料アップロード
               </Link>
