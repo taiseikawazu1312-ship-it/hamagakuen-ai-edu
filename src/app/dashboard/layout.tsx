@@ -10,6 +10,7 @@ import {
   FileText,
   Upload,
   ChevronDown,
+  Users,
 } from "lucide-react";
 import DemoBanner from "@/components/DemoBanner";
 
@@ -19,6 +20,7 @@ const tabs = [
   { label: "AI要因分析", href: "/dashboard/analysis", icon: Brain },
   { label: "施策提案", href: "/dashboard/proposals", icon: Lightbulb },
   { label: "レポート生成", href: "/dashboard/reports", icon: FileText },
+  { label: "生徒管理", href: "/dashboard/students", icon: Users },
 ];
 
 export default function DashboardLayout({

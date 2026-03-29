@@ -12,6 +12,7 @@ import {
   FileText,
   Bell,
   Flame,
+  AlertTriangle,
 } from "lucide-react";
 import DemoBanner from "@/components/DemoBanner";
 
@@ -21,6 +22,7 @@ const tabs = [
   { label: "教材", href: "/student/materials", icon: Library },
   { label: "学習ToDo", href: "/student/todo", icon: CheckSquare },
   { label: "進捗確認", href: "/student/progress", icon: BarChart3 },
+  { label: "弱点分析", href: "/student/weakness", icon: AlertTriangle },
   { label: "質問AI", href: "/student/ai-chat", icon: MessageCircle },
   { label: "レポート", href: "/student/reports", icon: FileText },
 ];
