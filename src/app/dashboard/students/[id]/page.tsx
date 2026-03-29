@@ -22,14 +22,14 @@ const loadingSteps = [
 ];
 
 const chartColors: Record<string, string> = {
-  算数: "#8B5CF6", 国語: "#F97316", 理科: "#14B8A6", 社会: "#EC4899", total: "#2563eb",
+  数学: "#8B5CF6", 国語: "#F97316", 物理: "#14B8A6", 化学: "#EC4899", total: "#2563eb",
 };
 
 export default function StudentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"exams" | "units" | "trend">("exams");
-  const [unitSubject, setUnitSubject] = useState("算数");
+  const [unitSubject, setUnitSubject] = useState("数学");
 
   const handleLoadComplete = useCallback(() => setIsLoading(false), []);
 
@@ -161,10 +161,10 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
                 <thead>
                   <tr className="border-b border-[var(--border)]">
                     <th className="text-left py-3 px-3 font-semibold text-[var(--muted)]">模試</th>
-                    <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">算数</th>
+                    <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">数学</th>
                     <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">国語</th>
-                    <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">理科</th>
-                    <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">社会</th>
+                    <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">物理</th>
+                    <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">化学</th>
                     <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">合計</th>
                     <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">偏差値</th>
                     <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">順位</th>
@@ -287,10 +287,10 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
                 <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #e2e8f0" }} />
                 <Legend />
                 <Line type="monotone" dataKey="total" name="総合" stroke={chartColors.total} strokeWidth={3} dot={{ r: 5 }} animationDuration={1200} />
-                <Line type="monotone" dataKey="算数" stroke={chartColors.算数} strokeWidth={2} dot={{ r: 3 }} animationDuration={1500} />
+                <Line type="monotone" dataKey="数学" stroke={chartColors.数学} strokeWidth={2} dot={{ r: 3 }} animationDuration={1500} />
                 <Line type="monotone" dataKey="国語" stroke={chartColors.国語} strokeWidth={2} dot={{ r: 3 }} animationDuration={1800} />
-                <Line type="monotone" dataKey="理科" stroke={chartColors.理科} strokeWidth={2} dot={{ r: 3 }} animationDuration={2100} />
-                <Line type="monotone" dataKey="社会" stroke={chartColors.社会} strokeWidth={2} dot={{ r: 3 }} animationDuration={2400} />
+                <Line type="monotone" dataKey="物理" stroke={chartColors.物理} strokeWidth={2} dot={{ r: 3 }} animationDuration={2100} />
+                <Line type="monotone" dataKey="化学" stroke={chartColors.化学} strokeWidth={2} dot={{ r: 3 }} animationDuration={2400} />
               </LineChart>
             </ResponsiveContainer>
             <div className="mt-3 p-3 bg-[var(--background)] rounded-lg">

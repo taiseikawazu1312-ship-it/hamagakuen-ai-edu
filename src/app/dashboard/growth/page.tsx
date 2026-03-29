@@ -55,7 +55,7 @@ export default function GrowthPage() {
                 <YAxis domain={[20, 100]} tick={{ fontSize: 12 }} />
                 <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }} />
                 <Legend />
-                <Line type="monotone" dataKey="平均点" stroke="#2563eb" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} animationDuration={1500} />
+                <Line type="monotone" dataKey="平均偏差値" stroke="#2563eb" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} animationDuration={1500} />
                 <Line type="monotone" dataKey="上位層" stroke="#16a34a" strokeWidth={2} dot={{ r: 3 }} strokeDasharray="4 2" animationDuration={1800} />
                 <Line type="monotone" dataKey="下位層" stroke="#dc2626" strokeWidth={2} dot={{ r: 3 }} strokeDasharray="4 2" animationDuration={2100} />
               </LineChart>
@@ -71,16 +71,16 @@ export default function GrowthPage() {
                 <h3 className="text-sm font-bold text-[var(--foreground)]">成長サマリー</h3>
               </div>
               <div className="mb-4 p-3 bg-[var(--accent)] rounded-lg">
-                <p className="text-xs text-[var(--muted)] mb-1">入学時からの伸長</p>
+                <p className="text-xs text-[var(--muted)] mb-1">入塾時からの偏差値伸長</p>
                 <div className="flex items-end gap-2">
                   <span className="text-2xl font-bold text-[var(--primary)]">
-                    +<CountUp end={16} suffix="点" duration={1200} />
+                    +<CountUp end={7.5} decimals={1} duration={1200} />
                   </span>
                   <span className="text-sm text-[var(--primary)] font-medium mb-0.5">
-                    +<CountUp end={30.1} decimals={1} suffix="%" duration={1400} />
+                    ポイント
                   </span>
                 </div>
-                <p className="text-xs text-[var(--muted)] mt-1">50点 → 66点</p>
+                <p className="text-xs text-[var(--muted)] mt-1">46.0 → 53.5</p>
               </div>
               <div className="mb-4 p-3 bg-green-50 rounded-lg">
                 <p className="text-xs text-[var(--muted)] mb-1">偏差値推移</p>
@@ -90,7 +90,7 @@ export default function GrowthPage() {
                   </span>
                   <ArrowUpRight className="w-5 h-5 text-[var(--success)] mb-0.5" />
                 </div>
-                <p className="text-xs text-[var(--muted)] mt-1">46.5 → 54.8</p>
+                <p className="text-xs text-[var(--muted)] mt-1">44.5 → 51.2</p>
               </div>
               <div className="p-3 bg-amber-50 rounded-lg">
                 <div className="flex items-start gap-2">

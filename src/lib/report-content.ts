@@ -91,7 +91,7 @@ function buildYearlyTrendChart() {
     data: yearlyComparison.map(y => ({
       label: y.year.replace('年度', ''),
       values: [
-        { name: '平均点', value: y.平均点 },
+        { name: "平均偏差値", value: y.平均偏差値 },
         { name: '上位10%', value: y['上位10%'] },
         { name: '中位', value: y.中位 },
         { name: '下位10%', value: y['下位10%'] },
@@ -122,7 +122,7 @@ function buildGrowthChart() {
     data: growthData.map(g => ({
       label: g.month,
       values: [
-        { name: '平均点', value: g.平均点 },
+        { name: "平均偏差値", value: g.平均偏差値 },
         { name: '上位層', value: g.上位層 },
         { name: '下位層', value: g.下位層 },
       ]
@@ -238,10 +238,10 @@ function generateSummaryReport(styles: string, date: string): string {
 
     <h2>全体成績概要</h2>
     <div class="stat-grid stat-grid-4">
-      <div class="stat-item"><div class="stat-value">61.2</div><div class="stat-sub negative">▼2.6%</div><div class="stat-label">全体平均点</div></div>
-      <div class="stat-item"><div class="stat-value">87.3</div><div class="stat-sub negative">▼1.4%</div><div class="stat-label">上位10%平均</div></div>
-      <div class="stat-item"><div class="stat-value">55.6</div><div class="stat-sub negative">▼4.2%</div><div class="stat-label">中位層平均</div></div>
-      <div class="stat-item"><div class="stat-value">31.5</div><div class="stat-sub negative">▼2.7%</div><div class="stat-label">下位10%平均</div></div>
+      <div class="stat-item"><div class="stat-value">51.2</div><div class="stat-sub negative">▼0.8</div><div class="stat-label">平均偏差値</div></div>
+      <div class="stat-item"><div class="stat-value">66.8</div><div class="stat-sub negative">▼0.7</div><div class="stat-label">上位10%平均</div></div>
+      <div class="stat-item"><div class="stat-value">48.6</div><div class="stat-sub negative">▼1.2</div><div class="stat-label">中位層平均</div></div>
+      <div class="stat-item"><div class="stat-value">36.5</div><div class="stat-sub negative">▼0.9</div><div class="stat-label">下位10%平均</div></div>
     </div>
     <p class="section-intro">全指標で前年を下回る結果となりました。特に<strong>中位層（-4.2%）の低下が顕著</strong>であり、学力の二極化傾向が見られます。</p>
 
@@ -249,8 +249,8 @@ function generateSummaryReport(styles: string, date: string): string {
 
     <h2>クラス別成績と前年比較</h2>
     <table>
-      <tr><th>クラス</th><th style="text-align:right">平均点</th><th style="text-align:right">前年比</th><th style="text-align:right">所見</th></tr>
-      ${classComparison.map(r => `<tr><td><strong>${r.class}</strong></td><td style="text-align:right">${r.平均点}点</td><td style="text-align:right" class="${r.前年比 < -3 ? 'negative' : r.前年比 < 0 ? 'warning' : 'positive'}">${r.前年比 > 0 ? '+' : ''}${r.前年比}点</td><td style="text-align:right;font-size:11px;">${r.前年比 < -3 ? '要対策' : r.前年比 < -1 ? '要注視' : '安定'}</td></tr>`).join('')}
+      <tr><th>クラス</th><th style="text-align:right">偏差値</th><th style="text-align:right">前年比</th><th style="text-align:right">所見</th></tr>
+      ${classComparison.map(r => `<tr><td><strong>${r.class}</strong></td><td style="text-align:right">${r.平均偏差値}点</td><td style="text-align:right" class="${r.前年比 < -3 ? 'negative' : r.前年比 < 0 ? 'warning' : 'positive'}">${r.前年比 > 0 ? '+' : ''}${r.前年比}</td><td style="text-align:right;font-size:11px;">${r.前年比 < -3 ? '要対策' : r.前年比 < -1 ? '要注視' : '安定'}</td></tr>`).join('')}
     </table>
     <p class="section-intro"><strong>Bクラスの-4.8点が最大の課題</strong>です。Sクラスは-1.2点と安定しており、上位層の指導は機能しています。</p>
 
@@ -318,13 +318,13 @@ function generateDetailedReport(styles: string, date: string): string {
     <h2>1. 全体概要</h2>
     <p class="section-intro">2024年度2学期中間テストの結果を、過去3年間の同時期データと比較分析しました。全${totalStudents}名の回答データに基づくレポートです。</p>
     <div class="stat-grid stat-grid-4">
-      <div class="stat-item"><div class="stat-value">61.2</div><div class="stat-sub negative">▼2.6%</div><div class="stat-label">全体平均</div></div>
-      <div class="stat-item"><div class="stat-value">87.3</div><div class="stat-sub negative">▼1.4%</div><div class="stat-label">上位10%</div></div>
-      <div class="stat-item"><div class="stat-value">55.6</div><div class="stat-sub negative">▼4.2%</div><div class="stat-label">中位層</div></div>
-      <div class="stat-item"><div class="stat-value">31.5</div><div class="stat-sub negative">▼2.7%</div><div class="stat-label">下位10%</div></div>
+      <div class="stat-item"><div class="stat-value">51.2</div><div class="stat-sub negative">▼0.8</div><div class="stat-label">全体平均</div></div>
+      <div class="stat-item"><div class="stat-value">66.8</div><div class="stat-sub negative">▼0.7</div><div class="stat-label">上位10%</div></div>
+      <div class="stat-item"><div class="stat-value">48.6</div><div class="stat-sub negative">▼1.2</div><div class="stat-label">中位層</div></div>
+      <div class="stat-item"><div class="stat-value">36.5</div><div class="stat-sub negative">▼0.9</div><div class="stat-label">下位10%</div></div>
     </div>
     <div class="stat-grid stat-grid-3">
-      <div class="stat-item"><div class="stat-value positive">+${lastGrowth.平均点 - firstGrowth.平均点}点</div><div class="stat-label">入学時からの伸長</div></div>
+      <div class="stat-item"><div class="stat-value positive">+${lastGrowth.平均偏差値 - firstGrowth.平均偏差値}点</div><div class="stat-label">入塾時からの偏差値伸長</div></div>
       <div class="stat-item"><div class="stat-value">54.8</div><div class="stat-sub positive">+8.3</div><div class="stat-label">偏差値推移</div></div>
       <div class="stat-item"><div class="stat-value warning">鈍化</div><div class="stat-label">2学期の成長傾向</div></div>
     </div>
@@ -333,10 +333,10 @@ function generateDetailedReport(styles: string, date: string): string {
     <p class="section-intro">全体平均は2022年度の64.5点をピークに2年連続で低下しています。上位層は比較的安定していますが、中位層・下位層の低下が全体を押し下げています。</p>
     ${buildYearlyTrendChart()}
     <table>
-      <tr><th>年度</th><th style="text-align:right">平均点</th><th style="text-align:right">上位10%</th><th style="text-align:right">中位</th><th style="text-align:right">下位10%</th><th style="text-align:right">上位-下位差</th></tr>
-      ${yearlyComparison.map(r => `<tr><td><strong>${r.year}</strong></td><td style="text-align:right">${r.平均点}</td><td style="text-align:right">${r['上位10%']}</td><td style="text-align:right">${r.中位}</td><td style="text-align:right">${r['下位10%']}</td><td style="text-align:right">${(r['上位10%'] - r['下位10%']).toFixed(1)}</td></tr>`).join('')}
+      <tr><th>年度</th><th style="text-align:right">偏差値</th><th style="text-align:right">上位10%</th><th style="text-align:right">中位</th><th style="text-align:right">下位10%</th><th style="text-align:right">上位-下位差</th></tr>
+      ${yearlyComparison.map(r => `<tr><td><strong>${r.year}</strong></td><td style="text-align:right">${r.平均偏差値}</td><td style="text-align:right">${r['上位10%']}</td><td style="text-align:right">${r.中位}</td><td style="text-align:right">${r['下位10%']}</td><td style="text-align:right">${(r['上位10%'] - r['下位10%']).toFixed(1)}</td></tr>`).join('')}
     </table>
-    <p class="section-intro">上位-下位差は2021年の56.7点から2024年の55.8点へとほぼ横ばいですが、中位の低下（58.2→55.6）が顕著です。</p>
+    <p class="section-intro">上位-下位差は2021年の56.7点から2024年の55.8点へとほぼ横ばいですが、中位の低下（58.2→48.6）が顕著です。</p>
 
     <div class="page-break"></div>
 
@@ -355,10 +355,10 @@ function generateDetailedReport(styles: string, date: string): string {
 
     <h2>4. クラス別分析</h2>
     <table>
-      <tr><th>クラス</th><th style="text-align:right">平均点</th><th style="text-align:right">前年比</th><th style="text-align:right">全体比</th><th>評価</th></tr>
+      <tr><th>クラス</th><th style="text-align:right">偏差値</th><th style="text-align:right">前年比</th><th style="text-align:right">全体比</th><th>評価</th></tr>
       ${classComparison.map(r => {
-        const diff = r.平均点 - 61.2;
-        return `<tr><td><strong>${r.class}</strong></td><td style="text-align:right">${r.平均点}点</td><td style="text-align:right" class="${r.前年比 < -3 ? 'negative' : r.前年比 < 0 ? 'warning' : 'positive'}">${r.前年比 > 0 ? '+' : ''}${r.前年比}点</td><td style="text-align:right">${diff > 0 ? '+' : ''}${diff.toFixed(1)}</td><td>${r.前年比 < -3 ? '<span class="badge badge-high">要対策</span>' : r.前年比 < -1 ? '<span class="badge badge-medium">要注視</span>' : '<span class="badge badge-low">安定</span>'}</td></tr>`;
+        const diff = r.平均偏差値 - 51.2;
+        return `<tr><td><strong>${r.class}</strong></td><td style="text-align:right">${r.平均偏差値}点</td><td style="text-align:right" class="${r.前年比 < -3 ? 'negative' : r.前年比 < 0 ? 'warning' : 'positive'}">${r.前年比 > 0 ? '+' : ''}${r.前年比}</td><td style="text-align:right">${diff > 0 ? '+' : ''}${diff.toFixed(1)}</td><td>${r.前年比 < -3 ? '<span class="badge badge-high">要対策</span>' : r.前年比 < -1 ? '<span class="badge badge-medium">要注視</span>' : '<span class="badge badge-low">安定</span>'}</td></tr>`;
       }).join('')}
     </table>
 
@@ -455,9 +455,9 @@ function generateParentReport(styles: string, date: string): string {
 
     <h2>テスト結果の概要</h2>
     <div class="stat-grid stat-grid-4">
-      <div class="stat-item"><div class="stat-value">61.2<span style="font-size:13px;">点</span></div><div class="stat-label">学年平均</div></div>
+      <div class="stat-item"><div class="stat-value">51.2<span style="font-size:13px;"</span></div><div class="stat-label">学年平均</div></div>
       <div class="stat-item"><div class="stat-value negative">-2.6<span style="font-size:13px;">%</span></div><div class="stat-label">前年同時期比</div></div>
-      <div class="stat-item"><div class="stat-value positive">+16<span style="font-size:13px;">点</span></div><div class="stat-label">入学時からの伸び</div></div>
+      <div class="stat-item"><div class="stat-value positive">+7.5<span style="font-size:13px;"</span></div><div class="stat-label">入学時からの伸び</div></div>
       <div class="stat-item"><div class="stat-value">54.8</div><div class="stat-label">偏差値（入学時46.5）</div></div>
     </div>
 
@@ -465,8 +465,8 @@ function generateParentReport(styles: string, date: string): string {
 
     <h2>クラス別の状況</h2>
     <table>
-      <tr><th>クラス</th><th style="text-align:right">平均点</th><th style="text-align:right">前年比</th><th>ひとこと</th></tr>
-      ${classComparison.map(r => `<tr><td><strong>${r.class}</strong></td><td style="text-align:right">${r.平均点}点</td><td style="text-align:right">${r.前年比 > 0 ? '+' : ''}${r.前年比}点</td><td style="font-size:11px;">${r.前年比 >= -1.5 ? '前年並みを維持しています' : r.前年比 >= -3 ? 'やや低下しています' : '重点的に対策を講じます'}</td></tr>`).join('')}
+      <tr><th>クラス</th><th style="text-align:right">偏差値</th><th style="text-align:right">前年比</th><th>ひとこと</th></tr>
+      ${classComparison.map(r => `<tr><td><strong>${r.class}</strong></td><td style="text-align:right">${r.平均偏差値}点</td><td style="text-align:right">${r.前年比 > 0 ? '+' : ''}${r.前年比}</td><td style="font-size:11px;">${r.前年比 >= -1.5 ? '前年並みを維持しています' : r.前年比 >= -3 ? 'やや低下しています' : '重点的に対策を講じます'}</td></tr>`).join('')}
     </table>
 
     ${buildGrowthChart()}
