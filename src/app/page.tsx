@@ -35,7 +35,7 @@ const stats = [
   { value: "90%", label: "分析時間削減" },
   { value: "95%", label: "要因特定精度" },
   { value: "24h", label: "AI対応時間" },
-  { value: "+12pt", label: "平均成績改善" },
+  { value: "+7.5", label: "平均偏差値改善" },
 ];
 
 export default function Home() {

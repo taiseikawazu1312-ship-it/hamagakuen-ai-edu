@@ -77,7 +77,7 @@ export default function GrowthPage() {
                     +<CountUp end={7.5} decimals={1} duration={1200} />
                   </span>
                   <span className="text-sm text-[var(--primary)] font-medium mb-0.5">
-                    ポイント
+                    偏差値
                   </span>
                 </div>
                 <p className="text-xs text-[var(--muted)] mt-1">46.0 → 53.5</p>

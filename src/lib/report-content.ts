@@ -341,7 +341,7 @@ function generateDetailedReport(styles: string, date: string): string {
     <div class="page-break"></div>
 
     <h2>3. 得点分布分析</h2>
-    <p class="section-intro">中〜上位帯（61-100点）の生徒数が減少し、中〜下位帯（0-60点）が増加しています。</p>
+    <p class="section-intro">上位帯（偏差値55以上）の生徒数が減少し、中〜下位帯（偏差値55未満）が増加しています。</p>
     ${buildScoreDistChart()}
     <table>
       <tr><th>得点帯</th><th style="text-align:right">今年度</th><th style="text-align:right">前年度</th><th style="text-align:right">増減</th><th style="text-align:right">構成比</th></tr>
@@ -633,7 +633,7 @@ function generateTeacherReport(styles: string, date: string, completedTasks: num
       <div class="stat-item"><div class="stat-value">${studentProfile.daysUntilExam}<span style="font-size:13px;">日</span></div><div class="stat-label">受験まで</div></div>
     </div>
     <div class="summary-box" style="background:#ecfdf5;border-left:4px solid #10b981;">
-      <strong>総合所見:</strong> 学習習慣は${studentProfile.streak}日連続学習と良好に定着。偏差値は目標まであと${(studentProfile.targetDeviation - studentProfile.currentDeviation).toFixed(1)}ポイント。英語が得意科目として牽引しているが、物理・数学IIBの底上げが合格の鍵。週${weeklyHours.toFixed(1)}時間の学習計画に対し、完了率${avgProgress}%はやや改善余地あり。
+      <strong>総合所見:</strong> 学習習慣は${studentProfile.streak}日連続学習と良好に定着。偏差値は目標まであと${(studentProfile.targetDeviation - studentProfile.currentDeviation).toFixed(1)}。英語が得意科目として牽引しているが、物理・数学IIBの底上げが合格の鍵。週${weeklyHours.toFixed(1)}時間の学習計画に対し、完了率${avgProgress}%はやや改善余地あり。
     </div>
 
     <h2>科目別偏差値と評価</h2>

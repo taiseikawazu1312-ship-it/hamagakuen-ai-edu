@@ -21,11 +21,11 @@ const tourSteps = [
 
 const tabs = [
   { label: "過去年度比較", href: "/dashboard", icon: BarChart3, tourId: "nav-overview" },
+  { label: "生徒管理", href: "/dashboard/students", icon: Users, tourId: "nav-students" },
   { label: "学力成長評価", href: "/dashboard/growth", icon: TrendingUp, tourId: "nav-growth" },
   { label: "AI要因分析", href: "/dashboard/analysis", icon: Brain, tourId: "nav-analysis" },
   { label: "施策提案", href: "/dashboard/proposals", icon: Lightbulb, tourId: "nav-proposals" },
   { label: "レポート生成", href: "/dashboard/reports", icon: FileText, tourId: "nav-reports" },
-  { label: "生徒管理", href: "/dashboard/students", icon: Users, tourId: "nav-students" },
   { label: "資料管理", href: "/dashboard/upload", icon: Upload, tourId: "nav-upload" },
 ];
 

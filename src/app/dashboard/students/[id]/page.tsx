@@ -305,8 +305,8 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
               </div>
               <p className="text-xs text-[var(--muted)]">
                 {gapToTarget <= 0 ? "目標偏差値を達成しています。この調子を維持しましょう。" :
-                 gapToTarget <= 3 ? `あと${gapToTarget.toFixed(1)}ポイントで目標到達です。現在のペースで到達可能です。` :
-                 `目標まで${gapToTarget.toFixed(1)}ポイントの差があります。重点科目の強化が必要です。`}
+                 gapToTarget <= 3 ? `目標偏差値まであと${gapToTarget.toFixed(1)}です。現在のペースで到達可能です。` :
+                 `目標偏差値まで${gapToTarget.toFixed(1)}の差があります。重点科目の強化が必要です。`}
               </p>
             </div>
           </div>
