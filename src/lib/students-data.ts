@@ -257,30 +257,76 @@ export function getExamHistory(studentId: string): ExamResult[] {
 }
 
 // ============================================================
-// Unit Scores per student (sample for detail pages)
+// Unit Scores per student (カリキュラム単元ベース)
 // ============================================================
+import { curriculum } from "./curriculum-data";
+
+// セクション単位の集約スコア
+export interface SectionScore {
+  subjectId: string;
+  subjectName: string;
+  sectionId: string;
+  sectionName: string;
+  avgScore: number;
+  classAverage: number;
+  status: "excellent" | "good" | "warning" | "danger";
+  units: UnitScore[];
+}
+
+// 擬似乱数（生徒ID + 単元IDからシード生成）
+function seededRandom(seed: string): number {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) {
+    h = ((h << 5) - h + seed.charCodeAt(i)) | 0;
+  }
+  return ((Math.sin(h) * 10000) % 1 + 1) % 1;
+}
+
 export function getUnitScores(studentId: string): UnitScore[] {
   const student = studentsList.find(s => s.id === studentId);
   if (!student) return [];
   const d = student.deviation;
+  const results: UnitScore[] = [];
 
-  return [
-    { subject: "数学", unit: "数学IA（二次関数・確率）", score: Math.min(98, Math.round(d * 1.2 + 8)), classAverage: 78, status: d > 65 ? "excellent" : "good" },
-    { subject: "数学", unit: "数学IIB（微分積分）", score: Math.max(30, Math.round(d * 0.8 - 5)), classAverage: 62, status: d < 60 ? "danger" : "warning" },
-    { subject: "数学", unit: "数学IIB（ベクトル・数列）", score: Math.max(35, Math.round(d * 0.75)), classAverage: 58, status: d < 58 ? "danger" : "warning" },
-    { subject: "数学", unit: "数学III（極限・積分）", score: Math.round(d * 0.9 + 3), classAverage: 65, status: d > 62 ? "good" : "warning" },
-    { subject: "国語", unit: "現代文（評論）", score: Math.min(95, Math.round(d * 1.1 + 10)), classAverage: 80, status: "good" },
-    { subject: "国語", unit: "現代文（小説）", score: Math.round(d * 0.95 + 5), classAverage: 68, status: d > 60 ? "good" : "warning" },
-    { subject: "国語", unit: "古文読解", score: Math.round(d * 0.85), classAverage: 62, status: d < 60 ? "warning" : "good" },
-    { subject: "国語", unit: "漢文", score: Math.max(30, Math.round(d * 0.7 - 2)), classAverage: 52, status: d < 65 ? "danger" : "warning" },
-    { subject: "物理", unit: "力学（運動方程式）", score: Math.round(d * 1.0 + 5), classAverage: 72, status: "good" },
-    { subject: "物理", unit: "電磁気", score: Math.max(40, Math.round(d * 0.8 - 3)), classAverage: 60, status: d < 60 ? "danger" : "warning" },
-    { subject: "物理", unit: "波動・熱力学", score: Math.round(d * 0.85 + 2), classAverage: 58, status: d < 58 ? "warning" : "good" },
-    { subject: "化学", unit: "理論化学（mol計算）", score: Math.round(d * 0.9 + 8), classAverage: 70, status: "good" },
-    { subject: "化学", unit: "無機化学", score: Math.round(d * 0.95 + 6), classAverage: 68, status: d > 58 ? "good" : "warning" },
-    { subject: "化学", unit: "有機化学", score: Math.max(35, Math.round(d * 0.75 - 5)), classAverage: 60, status: d < 60 ? "danger" : "warning" },
-    { subject: "化学", unit: "化学反応式", score: Math.max(40, Math.round(d * 0.7)), classAverage: 55, status: d < 58 ? "warning" : "good" },
-  ];
+  for (const subject of curriculum) {
+    for (const section of subject.sections) {
+      for (const unit of section.units) {
+        const r = seededRandom(studentId + unit.id);
+        // 基礎科目は偏差値に比例、発展は低め、ランダム要素も
+        const baseFactor = unit.importance === 1 ? 1.15 : unit.importance === 2 ? 0.95 : 0.78;
+        const rawScore = d * baseFactor + (r * 20 - 10);
+        const score = Math.max(20, Math.min(98, Math.round(rawScore)));
+        const classAvg = Math.round(50 + (r * 15 - 5));
+        const status: UnitScore["status"] = score >= 80 ? "excellent" : score >= 65 ? "good" : score >= 50 ? "warning" : "danger";
+        results.push({ subject: subject.subjectName, unit: `${section.name} - ${unit.name}`, score, classAverage: classAvg, status });
+      }
+    }
+  }
+  return results;
+}
+
+export function getSectionScores(studentId: string): SectionScore[] {
+  const allUnits = getUnitScores(studentId);
+  const sections: SectionScore[] = [];
+
+  for (const subject of curriculum) {
+    for (const section of subject.sections) {
+      const sectionUnits = allUnits.filter(u => u.unit.startsWith(section.name + " - "));
+      if (sectionUnits.length === 0) continue;
+      const avgScore = Math.round(sectionUnits.reduce((s, u) => s + u.score, 0) / sectionUnits.length);
+      const classAvg = Math.round(sectionUnits.reduce((s, u) => s + u.classAverage, 0) / sectionUnits.length);
+      const status: SectionScore["status"] = avgScore >= 80 ? "excellent" : avgScore >= 65 ? "good" : avgScore >= 50 ? "warning" : "danger";
+      sections.push({
+        subjectId: subject.subjectId,
+        subjectName: subject.subjectName,
+        sectionId: section.id,
+        sectionName: section.name,
+        avgScore, classAverage: classAvg, status,
+        units: sectionUnits,
+      });
+    }
+  }
+  return sections;
 }
 
 // ============================================================

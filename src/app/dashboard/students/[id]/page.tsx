@@ -6,9 +6,11 @@ import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from "recharts";
 import {
-  ArrowLeft, Brain, TrendingUp, TrendingDown, Minus, Target, AlertTriangle, CheckCircle2,
+  ArrowLeft, Brain, TrendingUp, TrendingDown, Minus, Target, AlertTriangle, CheckCircle2, ChevronDown, ChevronRight, GraduationCap, Users,
 } from "lucide-react";
-import { studentsList, getExamHistory, getUnitScores, getStudentTrend } from "@/lib/students-data";
+import { studentsList, getExamHistory, getSectionScores, getStudentTrend } from "@/lib/students-data";
+import { getUniversityData } from "@/lib/university-history-data";
+import { curriculum } from "@/lib/curriculum-data";
 import AnalyzingLoader from "@/components/AnalyzingLoader";
 import FadeIn from "@/components/FadeIn";
 import CountUp from "@/components/CountUp";
@@ -18,18 +20,24 @@ const loadingSteps = [
   "生徒データを読み込み中...",
   "模試成績を時系列で分析中...",
   "単元別の弱点を特定中...",
+  "志望校合格者データと照合中...",
   "AI所見を生成中...",
 ];
 
 const chartColors: Record<string, string> = {
-  数学: "#8B5CF6", 国語: "#F97316", 物理: "#14B8A6", 化学: "#EC4899", total: "#2563eb",
+  数学: "#8B5CF6", 国語: "#F97316", 物理: "#14B8A6", 化学: "#EC4899", total: "#2563eb", 英語: "#3B82F6",
+};
+
+const judgmentColors: Record<string, string> = {
+  A: "bg-blue-500 text-white", B: "bg-green-500 text-white", C: "bg-amber-500 text-white", D: "bg-orange-500 text-white", E: "bg-red-500 text-white",
 };
 
 export default function StudentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"exams" | "units" | "trend">("exams");
-  const [unitSubject, setUnitSubject] = useState("数学");
+  const [activeTab, setActiveTab] = useState<"exams" | "units" | "trend" | "univ">("exams");
+  const [unitSubject, setUnitSubject] = useState("math");
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
 
   const handleLoadComplete = useCallback(() => setIsLoading(false), []);
 
@@ -44,14 +52,23 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
   }
 
   const exams = getExamHistory(id);
-  const unitScores = getUnitScores(id);
+  const sectionScores = getSectionScores(id);
   const trendData = getStudentTrend(id);
+  const univData = getUniversityData(student.targetSchool);
   const gapToTarget = student.targetDeviation - student.deviation;
-  const subjects = [...new Set(unitScores.map((u) => u.subject))];
+  const subjectList = curriculum.map(s => ({ id: s.subjectId, name: s.subjectName }));
 
-  if (isLoading) {
-    return <AnalyzingLoader steps={loadingSteps} duration={2500} onComplete={handleLoadComplete} />;
-  }
+  const toggleSection = (sectionId: string) => {
+    setExpandedSections(prev => {
+      const next = new Set(prev);
+      next.has(sectionId) ? next.delete(sectionId) : next.add(sectionId);
+      return next;
+    });
+  };
+
+  if (isLoading) return <AnalyzingLoader steps={loadingSteps} duration={2500} onComplete={handleLoadComplete} />;
+
+  const filteredSections = sectionScores.filter(s => s.subjectId === unitSubject);
 
   return (
     <div className="space-y-6">
@@ -62,9 +79,7 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
         </Link>
         <div className="card">
           <div className="flex items-start gap-4">
-            <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-white font-bold text-xl flex-shrink-0 ${
-              student.trend === "up" ? "bg-emerald-500" : student.trend === "down" ? "bg-red-400" : "bg-gray-400"
-            }`}>
+            <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-white font-bold text-xl flex-shrink-0 ${student.trend === "up" ? "bg-emerald-500" : student.trend === "down" ? "bg-red-400" : "bg-gray-400"}`}>
               {student.avatarInitial}
             </div>
             <div className="flex-1">
@@ -90,9 +105,7 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
                   <p className="text-xs text-[var(--muted)]">目標との差</p>
                 </div>
                 <div className="bg-[var(--background)] rounded-lg p-3 text-center flex items-center justify-center gap-1.5">
-                  {student.trend === "up" ? <TrendingUp className="w-5 h-5 text-[var(--success)]" /> :
-                   student.trend === "down" ? <TrendingDown className="w-5 h-5 text-[var(--danger)]" /> :
-                   <Minus className="w-5 h-5 text-[var(--muted)]" />}
+                  {student.trend === "up" ? <TrendingUp className="w-5 h-5 text-[var(--success)]" /> : student.trend === "down" ? <TrendingDown className="w-5 h-5 text-[var(--danger)]" /> : <Minus className="w-5 h-5 text-[var(--muted)]" />}
                   <p className={`text-sm font-bold ${student.trend === "up" ? "text-[var(--success)]" : student.trend === "down" ? "text-[var(--danger)]" : ""}`}>
                     {student.trend === "up" ? "上昇傾向" : student.trend === "down" ? "低下傾向" : "横ばい"}
                   </p>
@@ -107,98 +120,68 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <FadeIn delay={100}>
           <div className="card">
-            <div className="flex items-center gap-2 mb-3">
-              <CheckCircle2 className="w-4 h-4 text-[var(--success)]" />
-              <h3 className="text-sm font-bold text-[var(--foreground)]">強み</h3>
-            </div>
-            <ul className="space-y-2">
-              {student.strengths.map((s, i) => (
-                <li key={i} className="text-sm text-[var(--muted)] flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 bg-[var(--success)] rounded-full mt-1.5 flex-shrink-0" />
-                  {s}
-                </li>
-              ))}
-            </ul>
+            <div className="flex items-center gap-2 mb-3"><CheckCircle2 className="w-4 h-4 text-[var(--success)]" /><h3 className="text-sm font-bold">強み</h3></div>
+            <ul className="space-y-2">{student.strengths.map((s, i) => (<li key={i} className="text-sm text-[var(--muted)] flex items-start gap-2"><span className="w-1.5 h-1.5 bg-[var(--success)] rounded-full mt-1.5 flex-shrink-0" />{s}</li>))}</ul>
           </div>
         </FadeIn>
         <FadeIn delay={200}>
           <div className="card">
-            <div className="flex items-center gap-2 mb-3">
-              <AlertTriangle className="w-4 h-4 text-[var(--warning)]" />
-              <h3 className="text-sm font-bold text-[var(--foreground)]">課題</h3>
-            </div>
-            <ul className="space-y-2">
-              {student.weaknesses.map((w, i) => (
-                <li key={i} className="text-sm text-[var(--muted)] flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 bg-[var(--warning)] rounded-full mt-1.5 flex-shrink-0" />
-                  {w}
-                </li>
-              ))}
-            </ul>
+            <div className="flex items-center gap-2 mb-3"><AlertTriangle className="w-4 h-4 text-[var(--warning)]" /><h3 className="text-sm font-bold">課題</h3></div>
+            <ul className="space-y-2">{student.weaknesses.map((w, i) => (<li key={i} className="text-sm text-[var(--muted)] flex items-start gap-2"><span className="w-1.5 h-1.5 bg-[var(--warning)] rounded-full mt-1.5 flex-shrink-0" />{w}</li>))}</ul>
           </div>
         </FadeIn>
       </div>
 
       {/* Tab Switcher */}
       <FadeIn delay={300}>
-        <div className="flex gap-1 bg-white border border-[var(--border)] rounded-xl p-1 w-fit">
-          {([["exams", "模試成績履歴"], ["units", "単元別成績"], ["trend", "偏差値推移"]] as const).map(([key, label]) => (
+        <div className="flex gap-1 bg-white border border-[var(--border)] rounded-xl p-1 w-fit overflow-x-auto">
+          {([["exams", "模試成績"], ["units", "単元別成績"], ["trend", "偏差値推移"], ["univ", "合格者比較"]] as const).map(([key, label]) => (
             <button key={key} onClick={() => setActiveTab(key)}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${activeTab === key ? "bg-[var(--primary)] text-white" : "text-[var(--muted)] hover:bg-[var(--background)]"}`}>
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${activeTab === key ? "bg-[var(--primary)] text-white" : "text-[var(--muted)] hover:bg-[var(--background)]"}`}>
               {label}
             </button>
           ))}
         </div>
       </FadeIn>
 
-      {/* Exam History */}
+      {/* === Exam History === */}
       {activeTab === "exams" && (
         <FadeIn delay={100}>
           <div className="card">
-            <h3 className="text-base font-bold text-[var(--foreground)] mb-4">模試成績履歴</h3>
+            <h3 className="text-base font-bold mb-4">模試成績履歴</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-[var(--border)]">
-                    <th className="text-left py-3 px-3 font-semibold text-[var(--muted)]">模試</th>
-                    <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">数学</th>
-                    <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">国語</th>
-                    <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">物理</th>
-                    <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">化学</th>
-                    <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">合計</th>
-                    <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">偏差値</th>
-                    <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">順位</th>
-                  </tr>
-                </thead>
+                <thead><tr className="border-b border-[var(--border)]">
+                  <th className="text-left py-3 px-3 font-semibold text-[var(--muted)]">模試</th>
+                  <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">数学</th>
+                  <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">国語</th>
+                  <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">物理</th>
+                  <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">化学</th>
+                  <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">総合偏差値</th>
+                  <th className="text-right py-3 px-3 font-semibold text-[var(--muted)]">順位</th>
+                </tr></thead>
                 <tbody>
                   {exams.map((exam, ei) => {
                     const prev = ei > 0 ? exams[ei - 1] : null;
                     const devDiff = prev ? exam.overallDeviation - prev.overallDeviation : 0;
                     return (
-                      <tr key={exam.examName} className="border-b border-[var(--border)] last:border-b-0">
+                      <tr key={exam.examName + ei} className="border-b border-[var(--border)] last:border-b-0">
                         <td className="py-3 px-3">
                           <div className="flex items-center gap-1.5">
-                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${exam.provider === "駿台" ? "bg-sky-50 text-sky-600" : "bg-amber-50 text-amber-600"}`}>
-                              {exam.provider}
-                            </span>
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${exam.provider === "駿台" ? "bg-sky-50 text-sky-600" : "bg-amber-50 text-amber-600"}`}>{exam.provider}</span>
                             <span className="font-medium text-xs">{exam.examName.replace(/第\d回\s/, '')}</span>
                           </div>
                           <div className="text-xs text-[var(--muted)]">{exam.date}月実施</div>
                         </td>
                         {exam.subjects.map((sub) => (
                           <td key={sub.name} className="py-3 px-3 text-right">
-                            <div className="font-semibold">{sub.score}</div>
-                            <div className="text-xs text-[var(--muted)]">{sub.deviation}</div>
+                            <div className="font-semibold">{sub.deviation}</div>
+                            <div className="text-xs text-[var(--muted)]">{sub.score}/{sub.maxScore}点</div>
                           </td>
                         ))}
-                        <td className="py-3 px-3 text-right font-bold">{exam.totalScore}/{exam.totalMaxScore}</td>
                         <td className="py-3 px-3 text-right">
-                          <span className="font-bold">{exam.overallDeviation}</span>
-                          {prev && (
-                            <span className={`text-xs ml-1 ${devDiff > 0 ? "text-[var(--success)]" : devDiff < 0 ? "text-[var(--danger)]" : ""}`}>
-                              {devDiff > 0 ? "+" : ""}{devDiff.toFixed(1)}
-                            </span>
-                          )}
+                          <span className="font-bold text-base">{exam.overallDeviation}</span>
+                          {prev && <span className={`text-xs ml-1 ${devDiff > 0 ? "text-[var(--success)]" : devDiff < 0 ? "text-[var(--danger)]" : ""}`}>{devDiff > 0 ? "+" : ""}{devDiff.toFixed(1)}</span>}
                         </td>
                         <td className="py-3 px-3 text-right text-xs text-[var(--muted)]">{exam.rank}</td>
                       </tr>
@@ -211,79 +194,94 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
         </FadeIn>
       )}
 
-      {/* Unit Scores */}
+      {/* === Unit Scores (Section-based) === */}
       {activeTab === "units" && (
         <FadeIn delay={100}>
           <div className="card">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-bold text-[var(--foreground)]">単元別成績</h3>
+              <h3 className="text-base font-bold">単元別成績（セクション集約）</h3>
               <div className="flex gap-1">
-                {subjects.map((sub) => (
-                  <button key={sub} onClick={() => setUnitSubject(sub)}
-                    className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${unitSubject === sub ? "bg-[var(--primary)] text-white" : "bg-[var(--background)] text-[var(--muted)]"}`}>
-                    {sub}
+                {subjectList.map(sub => (
+                  <button key={sub.id} onClick={() => { setUnitSubject(sub.id); setExpandedSections(new Set()); }}
+                    className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${unitSubject === sub.id ? "bg-[var(--primary)] text-white" : "bg-[var(--background)] text-[var(--muted)]"}`}>
+                    {sub.name}
                   </button>
                 ))}
               </div>
             </div>
-            <ResponsiveContainer width="100%" height={240}>
-              <BarChart data={unitScores.filter((u) => u.subject === unitSubject)} layout="vertical" margin={{ left: 100 }}>
+
+            {/* Section bar chart */}
+            <ResponsiveContainer width="100%" height={Math.max(200, filteredSections.length * 38 + 40)}>
+              <BarChart data={filteredSections} layout="vertical" margin={{ left: 120 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
                 <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11 }} unit="%" />
-                <YAxis type="category" dataKey="unit" tick={{ fontSize: 11 }} width={95} />
+                <YAxis type="category" dataKey="sectionName" tick={{ fontSize: 11 }} width={115} />
                 <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #e2e8f0" }} />
                 <Legend />
-                <Bar dataKey="score" name="生徒" fill="#2563eb" radius={[0, 4, 4, 0]} barSize={14} animationDuration={1200} />
-                <Bar dataKey="classAverage" name="クラス平均" fill="#93c5fd" radius={[0, 4, 4, 0]} barSize={14} animationDuration={1500} />
+                <Bar dataKey="avgScore" name="生徒" fill="#2563eb" radius={[0, 4, 4, 0]} barSize={12} animationDuration={1200} />
+                <Bar dataKey="classAverage" name="クラス平均" fill="#93c5fd" radius={[0, 4, 4, 0]} barSize={12} animationDuration={1500} />
               </BarChart>
             </ResponsiveContainer>
-            <div className="mt-4 overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-[var(--border)]">
-                    <th className="text-left py-2 px-3 text-xs font-semibold text-[var(--muted)]">単元</th>
-                    <th className="text-right py-2 px-3 text-xs font-semibold text-[var(--muted)]">生徒</th>
-                    <th className="text-right py-2 px-3 text-xs font-semibold text-[var(--muted)]">クラス平均</th>
-                    <th className="text-right py-2 px-3 text-xs font-semibold text-[var(--muted)]">差</th>
-                    <th className="text-left py-2 px-3 text-xs font-semibold text-[var(--muted)]">評価</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {unitScores.filter((u) => u.subject === unitSubject).map((u) => {
-                    const diff = u.score - u.classAverage;
-                    return (
-                      <tr key={u.unit} className="border-b border-[var(--border)] last:border-b-0">
-                        <td className="py-2 px-3 font-medium text-xs">{u.unit}</td>
-                        <td className="py-2 px-3 text-right font-semibold">{u.score}%</td>
-                        <td className="py-2 px-3 text-right text-[var(--muted)]">{u.classAverage}%</td>
-                        <td className={`py-2 px-3 text-right font-semibold ${diff > 0 ? "text-[var(--success)]" : diff < -5 ? "text-[var(--danger)]" : ""}`}>
-                          {diff > 0 ? "+" : ""}{diff}%
-                        </td>
-                        <td className="py-2 px-3">
-                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                            u.status === "excellent" ? "bg-blue-50 text-blue-600" :
-                            u.status === "good" ? "bg-green-50 text-green-600" :
-                            u.status === "warning" ? "bg-amber-50 text-amber-600" :
-                            "bg-red-50 text-red-600"
-                          }`}>
-                            {u.status === "excellent" ? "優秀" : u.status === "good" ? "良好" : u.status === "warning" ? "注意" : "要対策"}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+
+            {/* Expandable section/unit table */}
+            <div className="mt-4 space-y-1">
+              {filteredSections.map(section => (
+                <div key={section.sectionId} className="border border-[var(--border)] rounded-lg overflow-hidden">
+                  <button onClick={() => toggleSection(section.sectionId)}
+                    className="w-full flex items-center justify-between px-4 py-2.5 bg-[var(--background)] hover:bg-gray-100 transition-colors">
+                    <div className="flex items-center gap-3">
+                      {expandedSections.has(section.sectionId) ? <ChevronDown className="w-4 h-4 text-[var(--muted)]" /> : <ChevronRight className="w-4 h-4 text-[var(--muted)]" />}
+                      <span className="text-sm font-semibold">{section.sectionName}</span>
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${section.status === "excellent" ? "bg-blue-50 text-blue-600" : section.status === "good" ? "bg-green-50 text-green-600" : section.status === "warning" ? "bg-amber-50 text-amber-600" : "bg-red-50 text-red-600"}`}>
+                        {section.avgScore}%
+                      </span>
+                    </div>
+                    <span className="text-xs text-[var(--muted)]">{section.units.length}単元</span>
+                  </button>
+                  {expandedSections.has(section.sectionId) && (
+                    <div className="border-t border-[var(--border)]">
+                      <table className="w-full text-xs">
+                        <thead><tr className="border-b border-[var(--border)] bg-white">
+                          <th className="text-left py-2 px-4 font-semibold text-[var(--muted)]">単元</th>
+                          <th className="text-right py-2 px-3 font-semibold text-[var(--muted)]">生徒</th>
+                          <th className="text-right py-2 px-3 font-semibold text-[var(--muted)]">平均</th>
+                          <th className="text-right py-2 px-3 font-semibold text-[var(--muted)]">差</th>
+                          <th className="text-left py-2 px-3 font-semibold text-[var(--muted)]">評価</th>
+                        </tr></thead>
+                        <tbody>
+                          {section.units.map(u => {
+                            const diff = u.score - u.classAverage;
+                            const unitName = u.unit.split(" - ")[1] || u.unit;
+                            return (
+                              <tr key={u.unit} className="border-b border-[var(--border)] last:border-b-0">
+                                <td className="py-2 px-4">{unitName}</td>
+                                <td className="py-2 px-3 text-right font-semibold">{u.score}%</td>
+                                <td className="py-2 px-3 text-right text-[var(--muted)]">{u.classAverage}%</td>
+                                <td className={`py-2 px-3 text-right font-semibold ${diff > 0 ? "text-[var(--success)]" : diff < -5 ? "text-[var(--danger)]" : ""}`}>{diff > 0 ? "+" : ""}{diff}%</td>
+                                <td className="py-2 px-3">
+                                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${u.status === "excellent" ? "bg-blue-50 text-blue-600" : u.status === "good" ? "bg-green-50 text-green-600" : u.status === "warning" ? "bg-amber-50 text-amber-600" : "bg-red-50 text-red-600"}`}>
+                                    {u.status === "excellent" ? "優秀" : u.status === "good" ? "良好" : u.status === "warning" ? "注意" : "要対策"}
+                                  </span>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </FadeIn>
       )}
 
-      {/* Trend Chart */}
+      {/* === Trend Chart === */}
       {activeTab === "trend" && (
         <FadeIn delay={100}>
           <div className="card">
-            <h3 className="text-base font-bold text-[var(--foreground)] mb-4">偏差値推移</h3>
+            <h3 className="text-base font-bold mb-4">偏差値推移</h3>
             <ResponsiveContainer width="100%" height={320}>
               <LineChart data={trendData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -298,33 +296,181 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
                 <Line type="monotone" dataKey="化学" stroke={chartColors.化学} strokeWidth={2} dot={{ r: 3 }} animationDuration={2400} />
               </LineChart>
             </ResponsiveContainer>
-            <div className="mt-3 p-3 bg-[var(--background)] rounded-lg">
-              <div className="flex items-center gap-2 mb-1">
-                <Target className="w-4 h-4 text-[var(--primary)]" />
-                <span className="text-xs font-semibold text-[var(--foreground)]">目標ライン: {student.targetDeviation}</span>
+          </div>
+        </FadeIn>
+      )}
+
+      {/* === University Comparison === */}
+      {activeTab === "univ" && univData && (
+        <div className="space-y-4">
+          <FadeIn delay={100}>
+            <div className="card">
+              <div className="flex items-center gap-2 mb-4">
+                <GraduationCap className="w-5 h-5 text-[var(--primary)]" />
+                <h3 className="text-base font-bold">{univData.universityName} 合格者との比較</h3>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--accent)] text-[var(--primary)] font-medium">{univData.examType}</span>
               </div>
-              <p className="text-xs text-[var(--muted)]">
-                {gapToTarget <= 0 ? "目標偏差値を達成しています。この調子を維持しましょう。" :
-                 gapToTarget <= 3 ? `目標偏差値まであと${gapToTarget.toFixed(1)}です。現在のペースで到達可能です。` :
-                 `目標偏差値まで${gapToTarget.toFixed(1)}の差があります。重点科目の強化が必要です。`}
-              </p>
+              <p className="text-sm text-[var(--muted)] mb-4">過去の同校合格者の平均的な偏差値推移と、{student.name}の現在の推移を比較します。</p>
+
+              {/* Trajectory overlay chart */}
+              {(() => {
+                const mergedData = univData.successProfile.deviationTrajectory.map((dp, i) => ({
+                  month: dp.month,
+                  合格者平均: dp.overall,
+                  [student.name]: trendData[i]?.total ?? null,
+                }));
+                return (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={mergedData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                      <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+                      <YAxis domain={[40, 80]} tick={{ fontSize: 11 }} />
+                      <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #e2e8f0" }} />
+                      <Legend />
+                      <Line dataKey="合格者平均" stroke="#16a34a" strokeWidth={2.5} strokeDasharray="6 3" dot={{ r: 3 }} />
+                      <Line dataKey={student.name} stroke="#2563eb" strokeWidth={2.5} dot={{ r: 4 }} connectNulls />
+                    </LineChart>
+                  </ResponsiveContainer>
+                );
+              })()}
+
+              <div className="mt-3 flex items-center gap-4 text-xs text-[var(--muted)]">
+                <span>合格ボーダー偏差値: <strong className="text-[var(--foreground)]">{univData.requiredDeviation}</strong></span>
+                <span>現在の偏差値: <strong className="text-[var(--foreground)]">{student.deviation}</strong></span>
+                <span>差: <strong className={gapToTarget > 0 ? "text-[var(--danger)]" : "text-[var(--success)]"}>{gapToTarget > 0 ? "+" : ""}{gapToTarget.toFixed(1)}</strong></span>
+              </div>
             </div>
+          </FadeIn>
+
+          {/* Subject targets */}
+          <FadeIn delay={200}>
+            <div className="card">
+              <div className="flex items-center gap-2 mb-4">
+                <Target className="w-5 h-5 text-[var(--primary)]" />
+                <h3 className="text-base font-bold">科目別 合格目標偏差値</h3>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead><tr className="border-b border-[var(--border)]">
+                    <th className="text-left py-2 px-3 font-semibold text-[var(--muted)]">科目</th>
+                    <th className="text-right py-2 px-3 font-semibold text-[var(--muted)]">目標偏差値</th>
+                    <th className="text-center py-2 px-3 font-semibold text-[var(--muted)]">優先度</th>
+                    <th className="text-left py-2 px-3 font-semibold text-[var(--muted)]">ポイント</th>
+                  </tr></thead>
+                  <tbody>
+                    {univData.successProfile.subjectTargets.map(t => (
+                      <tr key={t.subject} className="border-b border-[var(--border)] last:border-b-0">
+                        <td className="py-2 px-3 font-medium">{t.subject}</td>
+                        <td className="py-2 px-3 text-right font-bold">{t.targetDeviation}</td>
+                        <td className="py-2 px-3 text-center">
+                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${t.priority === "必須" ? "bg-red-50 text-red-600" : t.priority === "重要" ? "bg-amber-50 text-amber-600" : "bg-gray-100 text-gray-600"}`}>{t.priority}</span>
+                        </td>
+                        <td className="py-2 px-3 text-xs text-[var(--muted)]">{t.notes}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* Key Milestones */}
+          <FadeIn delay={300}>
+            <div className="card">
+              <div className="flex items-center gap-2 mb-4">
+                <CheckCircle2 className="w-5 h-5 text-[var(--success)]" />
+                <h3 className="text-base font-bold">マイルストーン</h3>
+              </div>
+              <div className="space-y-3">
+                {univData.successProfile.keyMilestones.map((m, i) => (
+                  <div key={i} className="flex items-start gap-3 p-3 bg-[var(--background)] rounded-lg">
+                    <div className="w-10 h-10 rounded-lg bg-[var(--accent)] flex items-center justify-center flex-shrink-0">
+                      <span className="text-xs font-bold text-[var(--primary)]">{m.month}</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">{m.description}</p>
+                      <p className="text-xs text-[var(--muted)]">目標偏差値: {m.targetDeviation}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* Failure Patterns */}
+          <FadeIn delay={400}>
+            <div className="card">
+              <div className="flex items-center gap-2 mb-4">
+                <AlertTriangle className="w-5 h-5 text-[var(--warning)]" />
+                <h3 className="text-base font-bold">過去の不合格者に多い失敗パターン</h3>
+              </div>
+              <div className="space-y-3">
+                {univData.failurePatterns.map((fp, i) => (
+                  <div key={i} className="p-3 border border-amber-200 bg-amber-50 rounded-lg">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${fp.frequency === "very_common" ? "bg-red-100 text-red-600" : fp.frequency === "common" ? "bg-amber-100 text-amber-700" : "bg-gray-100 text-gray-600"}`}>
+                        {fp.frequency === "very_common" ? "非常に多い" : fp.frequency === "common" ? "よくある" : "時々ある"}
+                      </span>
+                      <span className="text-xs text-[var(--muted)]">関連科目: {fp.affectedSubjects.join(", ")}</span>
+                    </div>
+                    <p className="text-sm font-medium text-gray-800 mb-1">{fp.description}</p>
+                    <p className="text-xs text-amber-700">対策: {fp.preventionAdvice}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* Acceptance Rate Trends */}
+          <FadeIn delay={500}>
+            <div className="card">
+              <div className="flex items-center gap-2 mb-4">
+                <Users className="w-5 h-5 text-[var(--primary)]" />
+                <h3 className="text-base font-bold">合格率推移</h3>
+              </div>
+              <table className="w-full text-sm">
+                <thead><tr className="border-b border-[var(--border)]">
+                  <th className="text-left py-2 px-3 font-semibold text-[var(--muted)]">年度</th>
+                  <th className="text-right py-2 px-3 font-semibold text-[var(--muted)]">志願者</th>
+                  <th className="text-right py-2 px-3 font-semibold text-[var(--muted)]">合格者</th>
+                  <th className="text-right py-2 px-3 font-semibold text-[var(--muted)]">合格率</th>
+                  <th className="text-right py-2 px-3 font-semibold text-[var(--muted)]">合格者平均偏差値</th>
+                </tr></thead>
+                <tbody>
+                  {univData.acceptanceRateTrends.map(t => (
+                    <tr key={t.year} className="border-b border-[var(--border)] last:border-b-0">
+                      <td className="py-2 px-3 font-medium">{t.year}年</td>
+                      <td className="py-2 px-3 text-right">{t.applicants.toLocaleString()}</td>
+                      <td className="py-2 px-3 text-right">{t.accepted.toLocaleString()}</td>
+                      <td className="py-2 px-3 text-right font-semibold">{t.rate}%</td>
+                      <td className="py-2 px-3 text-right font-bold">{t.averageDeviation}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </FadeIn>
+        </div>
+      )}
+
+      {activeTab === "univ" && !univData && (
+        <FadeIn delay={100}>
+          <div className="card text-center py-12">
+            <p className="text-[var(--muted)]">この志望校の過去データはまだ登録されていません</p>
           </div>
         </FadeIn>
       )}
 
       {/* AI Comment */}
-      <FadeIn delay={400}>
+      <FadeIn delay={500}>
         <div className="card">
           <div className="flex items-center gap-2 mb-3">
             <Brain className="w-5 h-5 text-[var(--primary)]" />
-            <h3 className="text-base font-bold text-[var(--foreground)]">AI所見</h3>
+            <h3 className="text-base font-bold">AI所見</h3>
             <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--accent)] text-[var(--primary)] font-medium">AI Generated</span>
           </div>
           <div className="p-4 bg-[var(--accent)] rounded-lg border border-blue-100">
-            <p className="text-sm text-[var(--foreground)] leading-relaxed">
-              <TypewriterText text={student.aiComment} speed={12} />
-            </p>
+            <p className="text-sm leading-relaxed"><TypewriterText text={student.aiComment + (univData ? `\n\n【志望校情報】${univData.aiAdvice}` : "")} speed={12} /></p>
           </div>
         </div>
       </FadeIn>
