@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  BarChart3, TrendingUp, Brain, Lightbulb, FileText, Upload, ChevronDown, Users, HelpCircle,
+  BarChart3, TrendingUp, Brain, FileText, Upload, ChevronDown, Users, HelpCircle,
 } from "lucide-react";
 import DemoBanner from "@/components/DemoBanner";
 import NotificationPanel from "@/components/NotificationPanel";
@@ -13,8 +13,7 @@ import GuidedTour from "@/components/GuidedTour";
 const tourSteps = [
   { target: "[data-tour='stat-cards']", title: "全体概要", content: "まず偏差値の全体像を確認します。全指標で前年を下回っていることが分かります。" },
   { target: "[data-tour='nav-growth']", title: "成長評価", content: "入塾時からの成長推移を確認できます。2学期に成長が鈍化していることが見えます。" },
-  { target: "[data-tour='nav-analysis']", title: "AI要因分析", content: "AIが自動的に成績低下の要因を分析し、ポジティブ/ネガティブ要因を特定します。" },
-  { target: "[data-tour='nav-proposals']", title: "施策提案", content: "分析結果に基づき、具体的な改善施策を優先度付きで提案します。" },
+  { target: "[data-tour='nav-analysis']", title: "AI分析", content: "AIが自動的に成績低下の要因を分析し、分析結果に基づいた具体的な改善施策を提案します。" },
   { target: "[data-tour='nav-students']", title: "個別生徒管理", content: "生徒ごとの成績・模試履歴・弱点を個別に管理。クリックで詳細ページに遷移します。" },
   { target: "[data-tour='nav-upload']", title: "資料管理", content: "模試成績表・答案・過去問など、各種資料をAIが自動解析します。" },
 ];
@@ -23,8 +22,7 @@ const tabs = [
   { label: "生徒管理", href: "/dashboard/students", icon: Users, tourId: "nav-students" },
   { label: "過去年度比較", href: "/dashboard", icon: BarChart3, tourId: "nav-overview" },
   { label: "学力成長評価", href: "/dashboard/growth", icon: TrendingUp, tourId: "nav-growth" },
-  { label: "AI要因分析", href: "/dashboard/analysis", icon: Brain, tourId: "nav-analysis" },
-  { label: "施策提案", href: "/dashboard/proposals", icon: Lightbulb, tourId: "nav-proposals" },
+  { label: "AI分析", href: "/dashboard/analysis", icon: Brain, tourId: "nav-analysis" },
   { label: "レポート生成", href: "/dashboard/reports", icon: FileText, tourId: "nav-reports" },
   { label: "資料管理", href: "/dashboard/upload", icon: Upload, tourId: "nav-upload" },
 ];
