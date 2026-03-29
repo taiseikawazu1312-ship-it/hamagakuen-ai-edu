@@ -11,10 +11,10 @@ const notoSansJP = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  title: "浜学園 AI教育プラットフォーム",
+  title: "教育AIサポートシステム",
   description: "AIを活用した成績分析と個別最適化学習サポート。過年度データの比較分析、AI要因分析、施策提案を行う教育プラットフォーム。",
   openGraph: {
-    title: "浜学園 AI教育プラットフォーム",
+    title: "教育AIサポートシステム",
     description: "AIを活用した成績分析と個別最適化学習サポート",
     type: "website",
   },

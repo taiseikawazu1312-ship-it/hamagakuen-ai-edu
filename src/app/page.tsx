@@ -19,9 +19,10 @@ export default function Home() {
         </div>
         <div className="relative max-w-5xl mx-auto px-4 py-16 sm:py-20 text-center">
           <FadeIn delay={0}>
-            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3 leading-tight">
-              浜学園 AI教育プラットフォーム
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2 leading-tight">
+              教育AIサポートシステム
             </h1>
+            <p className="text-sm text-white/60 mb-3">札幌第一高校様向けデモ</p>
           </FadeIn>
           <FadeIn delay={100}>
             <p className="text-base sm:text-lg text-white/80 max-w-xl mx-auto leading-relaxed">
@@ -146,7 +147,7 @@ export default function Home() {
 
       {/* Footer */}
       <div className="border-t border-[var(--border)] mt-16 py-6">
-        <p className="text-center text-xs text-[var(--muted)]">浜学園 AI教育プラットフォーム</p>
+        <p className="text-center text-xs text-[var(--muted)]">教育AIサポートシステム</p>
       </div>
     </div>
   );

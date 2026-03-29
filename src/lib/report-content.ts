@@ -229,7 +229,7 @@ function generateSummaryReport(styles: string, date: string): string {
   const totalStudents = scoreDistribution.reduce((s, r) => s + r.今年度, 0);
   return `<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>サマリーレポート</title>${styles}</head><body>
     <div class="header">
-      <div class="org">浜学園</div>
+      <div class="org">札幌第一高校</div>
       <h1>成績分析 エグゼクティブサマリー</h1>
       <p class="subtitle">2024年度 2学期 中間テスト | 対象生徒数: ${totalStudents}名</p>
       <p class="date">作成日: ${date}</p>
@@ -283,7 +283,7 @@ function generateSummaryReport(styles: string, date: string): string {
     </div>
 
     <div class="footer">
-      <span>浜学園 AI教育プラットフォーム | AI Generated</span>
+      <span>教育AIサポートシステム | AI Generated</span>
       <span>${date} | Page 1/1</span>
     </div>
   </body></html>`;
@@ -296,7 +296,7 @@ function generateDetailedReport(styles: string, date: string): string {
 
   return `<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>詳細分析レポート</title>${styles}</head><body>
     <div class="header">
-      <div class="org">浜学園</div>
+      <div class="org">札幌第一高校</div>
       <h1>成績 詳細分析レポート</h1>
       <p class="subtitle">2024年度 2学期 中間テスト | 対象生徒数: ${totalStudents}名</p>
       <p class="date">作成日: ${date} | 分析期間: 2021年度〜2024年度</p>
@@ -431,7 +431,7 @@ function generateDetailedReport(styles: string, date: string): string {
     </div>
 
     <div class="footer">
-      <span>浜学園 AI教育プラットフォーム | AI Generated Detailed Report</span>
+      <span>教育AIサポートシステム | AI Generated Detailed Report</span>
       <span>${date}</span>
     </div>
   </body></html>`;
@@ -444,14 +444,14 @@ function generateParentReport(styles: string, date: string): string {
     th { background: #eef2ff; color: #4338ca; border-bottom: 2px solid #c7d2fe; }
   </style></head><body>
     <div class="header">
-      <div class="org" style="color:#6366f1;">浜学園</div>
+      <div class="org" style="color:#6366f1;">札幌第一高校</div>
       <h1>学習状況のご報告</h1>
       <p class="subtitle">2024年度 2学期 中間テスト結果</p>
       <p class="date">${date}</p>
     </div>
 
     <p>保護者の皆様へ</p>
-    <p>平素より浜学園の教育活動に格別のご理解とご協力を賜り、厚く御礼申し上げます。2024年度2学期中間テストの結果がまとまりましたので、ご報告させていただきます。</p>
+    <p>平素より本校の教育活動に格別のご理解とご協力を賜り、厚く御礼申し上げます。2024年度2学期中間テストの結果がまとまりましたので、ご報告させていただきます。</p>
 
     <h2>テスト結果の概要</h2>
     <div class="stat-grid stat-grid-4">
@@ -498,7 +498,7 @@ function generateParentReport(styles: string, date: string): string {
     <p style="margin-top:24px;">今後とも、お子様の学力向上と健やかな成長のために教職員一同努めてまいります。ご不明な点やお気づきの点がございましたら、担任までお気軽にご連絡ください。</p>
 
     <div style="margin-top:32px;text-align:right;font-size:13px;">
-      <p>浜学園</p>
+      <p>札幌第一高校</p>
       <p style="color:#64748b;font-size:12px;">担任: _______________</p>
     </div>
 
@@ -509,7 +509,7 @@ function generateParentReport(styles: string, date: string): string {
     </div>
 
     <div class="footer">
-      <span>浜学園</span>
+      <span>札幌第一高校</span>
       <span>${date}</span>
     </div>
   </body></html>`;
@@ -544,7 +544,7 @@ function generateSelfReport(styles: string, date: string, avgProgress: number, w
 
   return `<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>自己分析レポート</title>${styles}</head><body>
     <div class="header">
-      <div class="org" style="color:#10b981;">浜学園 AI学習サポート</div>
+      <div class="org" style="color:#10b981;">AI学習サポート</div>
       <h1>自己分析レポート</h1>
       <p class="subtitle">${studentProfile.name} | ${studentProfile.targetSchool} ${studentProfile.targetDepartment} 志望（${studentProfile.entranceMethod}）</p>
       <p class="date">${date} 作成</p>
@@ -609,7 +609,7 @@ function generateSelfReport(styles: string, date: string, avgProgress: number, w
     <div class="action-item"><div class="action-num" style="background:#ecfdf5;color:#047857;">3</div><div><strong>タスク完了率を85%以上に</strong><br><span style="font-size:12px;color:#475569;">現在の平均完了率${avgProgress}%を85%以上に引き上げることが、確実な成績向上につながります。</span></div></div>
 
     <div class="footer">
-      <span>浜学園 AI学習サポート | 自己分析レポート</span>
+      <span>AI学習サポート | 自己分析レポート</span>
       <span>${date}</span>
     </div>
   </body></html>`;
@@ -618,7 +618,7 @@ function generateSelfReport(styles: string, date: string, avgProgress: number, w
 function generateTeacherReport(styles: string, date: string, completedTasks: number, avgProgress: number, weeklyHours: number): string {
   return `<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>面談用レポート</title>${styles}</head><body>
     <div class="header">
-      <div class="org" style="color:#10b981;">浜学園 AI学習サポート</div>
+      <div class="org" style="color:#10b981;">AI学習サポート</div>
       <h1>面談用 学習状況レポート</h1>
       <p class="subtitle">生徒: ${studentProfile.name} | ${studentProfile.targetSchool} ${studentProfile.targetDepartment} 志望（${studentProfile.entranceMethod}）</p>
       <p class="date">${date} 作成</p>
@@ -697,7 +697,7 @@ function generateTeacherReport(styles: string, date: string, completedTasks: num
     </div>
 
     <div class="footer">
-      <span>浜学園 AI学習サポート | 面談用レポート</span>
+      <span>AI学習サポート | 面談用レポート</span>
       <span>${date}</span>
     </div>
   </body></html>`;
@@ -710,14 +710,14 @@ function generateStudentParentReport(styles: string, date: string, avgProgress: 
     th { background: #f5f3ff; color: #6d28d9; border-bottom: 2px solid #c4b5fd; }
   </style></head><body>
     <div class="header">
-      <div class="org" style="color:#8b5cf6;">浜学園 AI学習サポート</div>
+      <div class="org" style="color:#8b5cf6;">AI学習サポート</div>
       <h1>学習状況のご報告</h1>
       <p class="subtitle">${studentProfile.name}さんの学習状況について</p>
       <p class="date">${date}</p>
     </div>
 
     <p>${studentProfile.name}さんの保護者様</p>
-    <p>いつも浜学園の教育活動にご理解とご協力を賜り、ありがとうございます。${studentProfile.name}さんの最近の学習状況についてご報告いたします。</p>
+    <p>いつも本校の教育活動にご理解とご協力を賜り、ありがとうございます。${studentProfile.name}さんの最近の学習状況についてご報告いたします。</p>
 
     <h2>学習の概要</h2>
     <div class="stat-grid stat-grid-4">
@@ -779,7 +779,7 @@ function generateStudentParentReport(styles: string, date: string, avgProgress: 
     <p style="margin-top:24px;">${studentProfile.name}さんは、志望校合格に向けて着実に力をつけています。教職員一同、引き続き全力でサポートしてまいります。ご不明な点がございましたら、お気軽にご連絡ください。</p>
 
     <div style="margin-top:32px;text-align:right;font-size:13px;">
-      <p>浜学園</p>
+      <p>札幌第一高校</p>
       <p style="color:#64748b;font-size:12px;">担任: _______________</p>
     </div>
 
@@ -789,7 +789,7 @@ function generateStudentParentReport(styles: string, date: string, avgProgress: 
     </div>
 
     <div class="footer">
-      <span>浜学園 AI学習サポート</span>
+      <span>AI学習サポート</span>
       <span>${date}</span>
     </div>
   </body></html>`;

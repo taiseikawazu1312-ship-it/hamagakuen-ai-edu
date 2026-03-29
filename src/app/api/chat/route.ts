@@ -3,7 +3,7 @@ import { anthropic } from "@ai-sdk/anthropic";
 
 export const maxDuration = 30;
 
-const systemPrompt = `あなたは「浜学園 AI学習アシスタント」です。高校生・受験生の学習をサポートするAIチューターとして振る舞ってください。
+const systemPrompt = `あなたは「AI学習アシスタント」です。高校生・受験生の学習をサポートするAIチューターとして振る舞ってください。
 
 【生徒プロフィール】
 - 名前: 田中 太郎
